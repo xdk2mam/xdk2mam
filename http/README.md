@@ -13,6 +13,36 @@ The following repository has either files for the Bosch XDK 110 and for the data
 ## Requirements
 In order to be able to run the code on this repo you will to [download XDK Workbench](https://xdk.bosch-connectivity.com/software-downloads), have a XDK 110 and insall Node on the computer you are going to use as listener server.
 
+## Setting up your Node listener
+Because as soon as you flash the C program to your XDK it starts sending the sensor's data, it might be a good idea to start first the Node server that will be listening. Download and install Node.js and be sure to include npm package manager.
+
+Navigate to your xdk2mam-nodejs folder and run the following command
+
+```
+npm install
+```
+Once the installation finishes, edit the server.js file to add your Full Node (be sure to use one with PoW available).
+
+```
+let iota = new IOTA({
+  'host': 'https://your-node.com',
+  'port': '14265'
+});
+```
+And also change the seed value to your seed
+
+```
+const seed = "ENTERYOURSEEDITBWTGFTAFBZ9SXDSUNANZA9TGAOSIICFFOBHNUXQCFZWO9DSPUQUIZIJXOPHBY99999";
+```
+
+Once this is done, start the node server
+
+```
+node serve.js
+```
+Now we are ready to start with the XDK software.
+
+
 ## Flashing your XDK: wifi and sensors configuration
 Open XDK Workbench and go to File -> Import. Choose General > Projects from Folder or Archive and select the folder ***xdk2mam-c***. Accept to import project. Navigate to the source folder and edit the following lines at ***xdk2mam.h***
 
@@ -50,6 +80,8 @@ bool typesSensors[6] = {
 ```
 
 ### Clear, Build and Flash
-Once changes are to this files are saved, right click on ***xdk2mam*** folder in your Workbench Project Explorer and select ***Clean project***. Once this is done, repat and select ***Build Project***. Finally, once the project has been built, connect your XDK 110 via USB and click the ***Flash*** button to install the software on the board.
+Once changes are to this files are saved, right click on ***xdk2mam*** folder in your Workbench Project Explorer and select ***Clean project***. Once this is done, repat and select ***Build Project***. This process can take some minutes depending on your hardware and you should see any problems at the Workbench Console.
+
+Finally, once the project has been built, connect your XDK 110 via USB and click the ***Flash*** button to install the software on the board. 
 
 
