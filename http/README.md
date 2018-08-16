@@ -38,7 +38,7 @@ const seed = "ENTERYOURSEEDITBWTGFTAFBZ9SXDSUNANZA9TGAOSIICFFOBHNUXQCFZWO9DSPUQU
 Once this is done, start the node server
 
 ```
-node serve.js
+npm start
 ```
 Now we are ready to start with the XDK software.
 
