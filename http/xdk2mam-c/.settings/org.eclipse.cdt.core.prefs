@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+environment/project/cdt.managedbuild.toolchain.gnu.mingw.base.2085283633/XDK_FOTA_ENABLED_BOOTLOADER/delimiter=;
+environment/project/cdt.managedbuild.toolchain.gnu.mingw.base.2085283633/XDK_FOTA_ENABLED_BOOTLOADER/operation=append
+environment/project/cdt.managedbuild.toolchain.gnu.mingw.base.2085283633/XDK_FOTA_ENABLED_BOOTLOADER/value=1
+environment/project/cdt.managedbuild.toolchain.gnu.mingw.base.2085283633/append=true
+environment/project/cdt.managedbuild.toolchain.gnu.mingw.base.2085283633/appendContributed=true
