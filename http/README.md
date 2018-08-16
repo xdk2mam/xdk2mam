@@ -21,7 +21,7 @@ Navigate to your xdk2mam-nodejs folder and run the following command
 ```
 npm install
 ```
-Once the installation finishes, edit the server.js file to add your Full Node (be sure to use one with PoW available).
+Once the installation finishes, edit the server.js file to add your Full Node (be sure to use one with PoW enabled).
 
 ```
 let iota = new IOTA({
