@@ -82,6 +82,9 @@ bool typesSensors[6] = {
 ### Clear, Build and Flash
 Once changes are to this files are saved, right click on ***xdk2mam*** folder in your Workbench Project Explorer and select ***Clean project***. Once this is done, repat and select ***Build Project***. This process can take some minutes depending on your hardware and you should see any problems at the Workbench Console.
 
-Finally, once the project has been built, connect your XDK 110 via USB and click the ***Flash*** button to install the software on the board. 
+Finally, once the project has been built, connect your XDK 110 via USB and click the ***Flash*** button to install the software on the board. If everything went fine, you should be able to see the sensor data on your console.
+
+![Sensors data on listening server](https://xdk2mam.io/assets/images/server-node.png)
+
 
 
