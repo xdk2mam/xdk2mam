@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({	extended: true,
                                 limit: "1mb"}));
 
-// Enter your Node URL (be sure to use a node with PoW enabled)
+// Enter your Node URL and port (be sure to use a node with PoW enabled)
 let iota = new IOTA({
   'host': 'http://your-node.com',
   'port': '14265'
