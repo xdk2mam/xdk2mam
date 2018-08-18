@@ -30,20 +30,20 @@ typedef enum{
 
 
 
-#define WIFI_SSID 			"Telecentro-d2b8"
+#define WIFI_SSID 			"YourWifiNetwork"
 
-#define WIFI_PW				"L52795V5832HYX"
+#define WIFI_PW				"YourWifiPassword"
 
-#define MQTT_BROKER_HOST	"m14.cloudmqtt.com"
+#define MQTT_BROKER_HOST	"MQTT_IP_BROKER_HOST"
 
 
 #define MQTT_BROKER_PORT	UINT16_C(17567)
 
-#define MQTT_USERNAME	"booqeben"
+#define MQTT_USERNAME	"YourMqttUsername"
 
-#define MQTT_PASSWORD	"ANnFE1tc2n17"
+#define MQTT_PASSWORD	"YourMqttPassowrd"
 
-#define DEVICE_NAME			"XDK-aleelus"	//
+#define DEVICE_NAME			"XDK-DEVICE-NAME"	//
 
 #define USE_PUBLISH_TIMER 	true
 
@@ -51,7 +51,7 @@ typedef enum{
 
 #define COMMON_BUFFER_SIZE 	PUBLISH_BUFFER_SIZE
 
-#define TOPIC				"xdk2mam"
+#define TOPIC				"YourTopicName"
 
 #define PUBLISHTIMER_PERIOD_IN_MS 30000
 
