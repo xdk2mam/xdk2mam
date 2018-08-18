@@ -4,6 +4,7 @@ var express = require('express');
 var IOTA = require('iota.lib.js');
 var Mam = require('./node_modules/xdk2mam/mam.client.js');
 
+// Start Express on given port
 var app = express();
 var port = process.env.PORT || 8080;
 
@@ -13,12 +14,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({	extended: true,
                                 limit: "1mb"}));
 
+// Enter your Node URL and port (be sure to use a node with PoW enabled)
 let iota = new IOTA({
-  'host': 'http://aleelus.com',
+  'host': 'http://your-node.com',
   'port': '14265'
 });
 
-//EXAMPLE
+// Replace by your seed
 const seed = "BIXGXUSFAJLKSQXBABITBWTGFTAFBZ9SXDSUNANZA9TGAOSIICFFOBHNUXQCFZWO9DSPUQUIZIJXOPHBY";
 
 
