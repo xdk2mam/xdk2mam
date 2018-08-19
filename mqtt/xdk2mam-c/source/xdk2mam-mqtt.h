@@ -37,13 +37,13 @@ typedef enum{
 #define MQTT_BROKER_HOST	"MQTT_IP_BROKER_HOST"
 
 
-#define MQTT_BROKER_PORT	UINT16_C(17567)
+#define MQTT_BROKER_PORT	UINT16_C(17567) //<-- MQTT_PORT_BROKER
 
 #define MQTT_USERNAME	"YourMqttUsername"
 
 #define MQTT_PASSWORD	"YourMqttPassowrd"
 
-#define DEVICE_NAME			"XDK-DEVICE-NAME"	//
+#define DEVICE_NAME			"XDK-DEVICE-NAME"	
 
 #define USE_PUBLISH_TIMER 	true
 

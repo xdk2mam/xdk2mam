@@ -21,7 +21,7 @@
 enum XDK_App_ModuleID_E
 {
     XDK_APP_MODULE_ID_MAIN = XDK_COMMON_ID_OVERFLOW,
-    XDK_APP_MODULE_ID_SENDDATAOVERMQTT
+	XDK_APP_MODULE_ID_XDK2MAM_MQTT
     /* Define next module ID here and assign a value to it! */
 };
 
