@@ -31,8 +31,11 @@ typedef enum{
 #define NTP_DNS_TIMEOUT_IN_S UINT16_C(5)
 #define NTP_DNS_RETRY_INTERVAL_IN_MS UINT16_C(100)
 
+/**
+ * XDK Device ID/Name.
+ */
+#define DEVICE_NAME			"XDK-device-id"
 
-#define DEVICE_NAME			"XDK-aleelus"
 /**
  * WLAN_CONNECT_WPA_SSID is the SSID of the WIFI network you want to connect to.
  */
