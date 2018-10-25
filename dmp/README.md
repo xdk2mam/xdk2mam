@@ -111,7 +111,7 @@ app.post('/sensors', async function(req, res) {
     });
   });
 ```
-In this case, the Light sensor value must be retrieved as **milliLux** acording to [how it was named in the JSON object created by the XDK110 sensor](https://github.com/xdk2mam/xdk2mam/blob/1232407c86dd2540aeda7653faed6b27e5c2b1ae/dmp/xdk2mam-c/source/sensors/LightSensor.c#L67)
+In this case, the Light sensor value must be retrieved as **milliLux** acording to [how it was named in the JSON object created by the XDK110 sensor](https://github.com/xdk2mam/xdk2mam/blob/1232407c86dd2540aeda7653faed6b27e5c2b1ae/dmp/xdk2mam-c/source/sensors/LightSensor.c#L67).
 
 
 
