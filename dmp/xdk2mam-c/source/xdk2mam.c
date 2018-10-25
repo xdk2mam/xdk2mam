@@ -1,4 +1,4 @@
-#include "XDKAppInfo.h"
+#include "XDKAppInfo.h" 
 
 #undef BCDS_MODULE_ID  /* Module ID define before including Basics package*/
 #define BCDS_MODULE_ID XDK_APP_MODULE_ID_HTTP_XDK2MAM_CLIENT
