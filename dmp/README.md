@@ -106,8 +106,8 @@ app.post('/sensors', async function(req, res) {
         hum = data.value;
       else if(data.name == 'Pressure')
         press = data.value;
-      **else if(data.name == 'milliLux')
-        light = data.value;**
+      else if(data.name == 'milliLux')
+        light = data.value;
     });
   });
 ```
