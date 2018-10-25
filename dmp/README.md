@@ -115,6 +115,6 @@ In this case, the Light sensor value must be retrieved as **milliLux** acording 
 
 **Note that in order to see this value on the DMP stream you will have to define it together with the others.**
 
-[Added milliLux value to DMP device](https://xdk2mam.io/assets/images/mili-lux.png)
+[Added milliLux value to DMP device](https://xdk2mam.io/assets/images/milli-lux.png)
 
 
