@@ -92,4 +92,26 @@ Finally, point your browser to https://datamarket-url/#/sensor/xdk2mam-001, fund
 
 ![Sensors data on listening server](https://xdk2mam.io/assets/images/sensor-stream.png)
 
+## Adding more sensors to the stream
+You can add data for other XDK110 sensors to your DMP stream by listing them in the **dmp.js** file. You just need to follow every sensor naming convention. For instance, if you were to add data from the Light sensor, you should just include it like this: 
+
+```
+app.post('/sensors', async function(req, res) {
+  var temp,press,hum,lux;
+  req.body.xdk2mam.forEach(function(element){
+    element.data.forEach(function(data){
+      if(data.name == 'Temperature')
+        temp = data.value;
+      else if(data.name == 'Humidity')
+        hum = data.value;
+      else if(data.name == 'Pressure')
+        press = data.value;
+      else if(data.name == 'milliLux')
+        light = data.value;
+    });
+  });
+```
+In this case, the Light sensor value must be retrieved as **milliLux** acording to ![how it was named in the JSON object created by the XDK110 sensor](https://github.com/xdk2mam/xdk2mam/blob/1232407c86dd2540aeda7653faed6b27e5c2b1ae/dmp/xdk2mam-c/source/sensors/LightSensor.c#L67)
+
+
 
