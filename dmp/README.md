@@ -93,7 +93,7 @@ Finally, point your browser to https://datamarket-url/#/sensor/xdk2mam-001, fund
 ![Sensors data on listening server](https://xdk2mam.io/assets/images/sensor-stream.png)
 
 ## Adding more sensors to the stream
-You can add data for other XDK110 sensors to your DMP stream by listing them in the **dmp.js** file. You just need to follow every sensor naming convention. For instance, if you were to add data from the Light sensor, you should just include it like this: 
+You can add data from other XDK110 sensors to your DMP stream by listing them in the **dmp.js** file. You just need to follow every sensor naming convention. For instance, if you were to add data from the Light sensor, you should just include it like this: 
 
 ```
 app.post('/sensors', async function(req, res) {
