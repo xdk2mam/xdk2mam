@@ -88,7 +88,7 @@ If everything went fine you should see your **Weather station data on your conso
 
 ![Sensors data on listening server](https://xdk2mam.io/assets/images/console-fetching.png)
 
-Finally, point your browser to https://marketplacev2.firebaseapp.com/#/sensor/xdk2mam-001, fund your wallet and purchase access to the data stream to check everything is working fine
+Finally, point your browser to https://datamarket-url/#/sensor/xdk2mam-001, fund your wallet and purchase access to the data stream to check everything is working fine
 
 ![Sensors data on listening server](https://xdk2mam.io/assets/images/sensor-stream.png)
 
