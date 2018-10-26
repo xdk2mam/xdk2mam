@@ -16,8 +16,8 @@ The following repository has either files for the Bosch XDK 110 and for the data
 # Instructions
 
 ## Requirements
-In order to be able to run the code on this repo you will need to [download XDK Workbench](https://xdk.bosch-connectivity.com/software-downloads), have an XDK 110 and insall Node on the computer/server you are going to use as listener server.
-To be able to publish data to the DMP you will need access to the Dashboard to create the devices that will recieve the XDK data. 
+In order to be able to run the code on this repo you will need to [download XDK Workbench](https://xdk.bosch-connectivity.com/software-downloads), have an XDK 110 and install Node.js on the computer/server you are going to use as listener.
+Additionally you will need access to the DMP Dashboard to create the devices that will recieve the XDK 110 data. 
 
 ## 1. Access Datamarketplace dashboard to create a device
 First things first. Go to the DMP Dashboard, click on **Add Device** and complete the form with the corresponding values. 
