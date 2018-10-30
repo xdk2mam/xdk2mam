@@ -42,7 +42,7 @@ char* processMagnetometerData(void * param1, uint32_t param2)
     if ( RETCODE_OK == sensorApiRetValue)
     {
     	//microtesla
-        sprintf(buffer,"{\"sensorType\":\"Magnetometer\",\"data\":[{\"name\":\"x\",\"value\":\"%ld\"},{\"name\":\"y\",\"value\":\"%ld\"},{\"name\":\"z\",\"value\":\"%ld\"}]}",
+        sprintf(buffer,"{\"sensorType\":\"Magnetometer\",\"data\":[{\"x\":\"%ld\"},{\"y\":\"%ld\"},{\"z\":\"%ld\"}]}",
 							(long int) getMagData.xAxisData, (long int) getMagData.yAxisData, (long int) getMagData.zAxisData);
     }
     else
