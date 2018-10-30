@@ -54,7 +54,7 @@ char* processGyroData(void * param1, uint32_t param2)
     {
 
 
-        sprintf(buffer,"{\"sensorType\":\"Gyroscope\",\"data\":[{\"name\":\"x\",\"value\":\"%ld\"},{\"name\":\"y\",\"value\":\"%ld\"},{\"name\":\"z\",\"value\":\"%ld\"}]}",
+        sprintf(buffer,"{\"sensorType\":\"Gyroscope\",\"data\":[{\"x\":\"%ld\"},{\"y\":\"%ld\"},{\"z\":\"%ld\"}]}",
 							(long int) getMdegData.xAxisData, (long int) getMdegData.yAxisData, (long int) getMdegData.zAxisData);
 
     }
