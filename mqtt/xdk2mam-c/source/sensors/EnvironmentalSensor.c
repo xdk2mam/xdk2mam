@@ -42,7 +42,7 @@ char * processEnvSensorData(void * param1, uint32_t param2)
     if ( RETCODE_OK == returnValue)
     {
 
-       sprintf(buffer,"{\"sensorType\": \"Environmental\",\"data\":[{\"name\":\"Pressure\",\"value\":\"%ld\"},{\"name\":\"Temperature\",\"value\":\"%ld\"},{\"name\":\"Humidity\",\"value\":\"%ld\"}]}",
+       sprintf(buffer,"{\"sensorType\": \"Environmental\",\"data\":[{\"Pressure\":\"%ld\"},{\"Temperature\":\"%ld\"},{\"Humidity\":\"%ld\"}]}",
         		(long int) bme280.pressure, (long int) bme280.temperature, (long int) bme280.humidity);
 
     }
