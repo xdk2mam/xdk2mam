@@ -93,17 +93,19 @@ static Retcode_T NetworkSetup(void)
 {
     Retcode_T retcode = RETCODE_OK;
     WlanConnect_SSID_T connectSSID = (WlanConnect_SSID_T) WIFI_SSID;
-    WlanConnect_PassPhrase_T connectPassPhrase =
-            (WlanConnect_PassPhrase_T) WIFI_PW;
+    WlanConnect_PassPhrase_T connectPassPhrase;
     retcode = WlanConnect_Init();
     if (retcode == RETCODE_OK)
     {
         retcode = NetworkConfig_SetIpDhcp(0);
-
     }
     if (retcode == RETCODE_OK)
     {
-        retcode = WlanConnect_WPA(connectSSID, connectPassPhrase, NULL);
+        if (WIFI_PW) {
+            connectPassPhrase = (WlanConnect_PassPhrase_T) WIFI_PW;
+            retcode = WlanConnect_WPA(connectSSID, connectPassPhrase, NULL);
+        } else
+            retcode = WlanConnect_Open(connectSSID, NULL);
     }
     if (retcode == RETCODE_OK)
     {
@@ -112,7 +114,6 @@ static Retcode_T NetworkSetup(void)
 
     return retcode;
 }
-
 
 static retcode_t SubscribeToOwnPublishTopic(void)
 {
