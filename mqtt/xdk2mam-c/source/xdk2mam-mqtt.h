@@ -32,7 +32,8 @@ typedef enum{
 
 #define WIFI_SSID 			"YourWifiNetwork"
 
-#define WIFI_PW				"YourWifiPassword"
+#define WIFI_PW				"YourWifiPassword" // set to WIFI_PW 0 to use open wireless networks 
+//#define WIFI_PW				0 // WIFI_PW 0 to be used with open wireless networks 
 
 #define MQTT_BROKER_HOST	"MQTT_IP_BROKER_HOST"
 
