@@ -62,7 +62,6 @@ enum App_Retcode_E
     RETCODE_MQTT_SUBSCRIBE_FAIL,
     RETCODE_MQTT_CONNECT_FAIL,
     RETCODE_MQTT_DISCONNECT_FAIL,
-    RETCODE_MQTT_IPCONIG_FAIL,
 };
 
 void AppInitSystem(void * CmdProcessorHandle, uint32_t param2);
