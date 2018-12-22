@@ -5,7 +5,8 @@ exchange in both ways between the XDK and other BLE devices.
 
 The following repository has either files for the Bosch XDK 110 and for the data receiver in Node.js where the attach to Tangle via MAM happens.
 
-**Note that the Node code provided here works only in Linux (aimed to Raspberry Pi mainly). If you want to set a receiver on other OS you can extend the solution by visiting the [Noble Repository](https://github.com/noble/noble)**
+**Note that the Node code provided here works only in Linux (aimed to Raspberry Pi mainly). If you want to set a receiver on other OS you can extend the solution by visiting the [Noble Repository](https://github.com/noble/noble). 
+Following code has been tested on Debian and Raspberry 3 with Raspbian**
 
 
 **This package uses a config file on a micro sd card, which makes possible to alter some values as the interval or the sensors used without need to recompile (you just change values in the config file and you are ready to go)**
