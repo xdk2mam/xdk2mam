@@ -1,4 +1,4 @@
-# XDK2MAM Bluethooth Low Energy (BLE) WITH SD CARD
+# XDK2MAM Bluetooth Low Energy (BLE) WITH SD CARD
 The XDK provides several BLE APIs to manage the BLE functionality on the device. The interfaces can be used by applications in order to communicate via the ALPWISE BLE stack with surrounding BLE devices.
 A wide range of BLE functionalities can be achieved using the XDK, from configuration of the BLE controller according to the requirements of the designed XDK application, up to active BLE connections, including data
 exchange in both ways between the XDK and other BLE devices. 
