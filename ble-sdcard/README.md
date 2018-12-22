@@ -61,7 +61,7 @@ Finally, once the project has been built, connect your XDK 110 via USB and click
 
 ### Editing config data
 
-Open the **config.cfg** file on your computer and change the values to match your WLAN data, host, port and the sensors you want to use.
+Open the **config.cfg** file on your computer and change the values the define an id, port and the sensors you want to use.
 
 ```
 DEVICE_NAME=enter-your-device-id
