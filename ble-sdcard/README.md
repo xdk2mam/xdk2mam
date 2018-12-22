@@ -42,10 +42,10 @@ And also change the seed value to your seed so you can open your own channel
 const seed = "ENTERYOURSEEDITBWTGFTAFBZ9SXDSUNANZA9TGAOSIICFFOBHNUXQCFZWO9DSPUQUIZIJXOPHBY99999";
 ```
 
-Once this is done, start the node server
+Once this is done, start the node server (notice that you need to be rooted or use sudo)
 
 ```
-node xdk2mam-ble.js enter-your-device-id (this value is defined on the first line of the config file)
+sudo node xdk2mam-ble.js enter-your-device-id (this value is defined on the first line of the config file)
 ```
 Now we are ready to start with the XDK software.
 
@@ -81,4 +81,4 @@ If everything went fine you should see data on your console.
 
 
 
-![Sensors data on listening server](https://xdk2mam.io/assets/images/ble-screen.png)
+![Sensors data on listening server](https://xdk2mam.io/assets/images/ble-screen-pi.png)
