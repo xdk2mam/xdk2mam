@@ -28,7 +28,7 @@ Because as soon as you flash the C program to your XDK it starts sending the sen
 Navigate to your xdk2mam-nodejs folder and run the following command
 
 ```
-npm install
+npm i
 ```
 Once the installation finishes, edit the xdk2mam-ble.js file to add your Full Node (be sure to use one with PoW enabled).
 
