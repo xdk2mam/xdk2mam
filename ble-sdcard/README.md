@@ -46,7 +46,7 @@ const seed = "ENTERYOURSEEDITBWTGFTAFBZ9SXDSUNANZA9TGAOSIICFFOBHNUXQCFZWO9DSPUQU
 Once this is done, start the node server (notice that you need to be rooted or use sudo)
 
 ```
-sudo node xdk2mam-ble.js enter-your-device-id (this value is defined on the first line of the config file)
+sudo node xdk2mam-ble.js enter-your-device-id (this value is defined on the first line of the config.cfg file)
 ```
 Now we are ready to start with the XDK software.
 
