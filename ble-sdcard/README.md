@@ -51,7 +51,7 @@ sudo node xdk2mam-ble.js enter-your-device-id (this value is defined on the firs
 Now we are ready to start with the XDK software.
 
 
-## Flashing your XDK: wifi and sensors configuration
+## Flashing your XDK: sensors configuration
 Open XDK Workbench and go to File -> Import. Choose General > Projects from Folder or Archive and select the folder ***xdk2mam-c***. Accept to import project. 
 
 
