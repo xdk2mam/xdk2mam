@@ -16,12 +16,12 @@ app.use(bodyParser.urlencoded({	extended: true,
 
 // Enter your Node URL and port (be sure to use a node with PoW enabled)
 let iota = new IOTA({
-  'host': 'http://your-node.com',
+  'host': 'http://173.212.193.59',
   'port': '14265'
 });
 
 // Replace by your seed
-const seed = "ENTERYOURSEEDITBWTGFTAFBZ9SXDSUNANZA9TGAOSIICFFOBHNUXQCFZWO9DSPUQUIZIJXOPHBY99999";
+const seed = "ENTERYOURSEEDAXBWTGFTAFBZ9SXDSUNANZA9TGAOSIICFFOBHNUXQCFZWO9DSPUQUIZIJXOPHBY99999";
 
 
 let mamState = Mam.init(iota, seed, 2);

@@ -33,7 +33,9 @@
 #include "Magnetometer.h"
 #include "Acoustic.h"
 #include "semphr.h"
-
+#include "BCDS_SDCard_Driver.h"
+#include "ff.h"
+#include "fs.h"
 
 static xTaskHandle httpGetTaskHandle;
 static xTaskHandle httpPostTaskHandle;
@@ -42,7 +44,7 @@ static uint32_t httpGetPageOffset = 0;
 static CmdProcessor_T CommandProcessorHandle;
 CmdProcessor_T *AppCmdProcessorHandle;
 static uint32_t SysTime = UINT32_C(0);
-
+static FIL fileObject;
 static SemaphoreHandle_t semPost = NULL;
 
 // Global array of all sensors => true : enable -- false : disable
@@ -53,8 +55,15 @@ bool typesSensors[7] = {
 						true, //INERTIAL
 						true, //LIGHT
 						true, //MAGNETOMETER
-						true  //ACOUSTIC
+						true, //ACOUSTIC
 					};
+
+char* DEVICE_NAME;
+char* WLAN_SSID;
+char* WLAN_PSK;
+char* DEST_SERVER_HOST;
+char* DEST_SERVER_PORT;
+char* INTER_REQUEST_INTERVAL;
 
 static Retcode_T ServalPalSetup(void)
 {
@@ -78,6 +87,111 @@ static Retcode_T ServalPalSetup(void)
 }
 
 
+void InitSdCard(void){
+
+	Retcode_T retVal =RETCODE_FAILURE;
+	FRESULT FileSystemResult = 0;
+	static FATFS FatFileSystemObject;
+	SDCardDriver_Initialize();
+	if(SDCARD_INSERTED== SDCardDriver_GetDetectStatus()){
+		retVal = SDCardDriver_DiskInitialize(DRIVE_ZERO);
+		if(RETCODE_OK == retVal){
+			printf("SD Card Disk initialize succeeded \n\r");
+			FileSystemResult = f_mount(&FatFileSystemObject, DEFAULT_LOGICAL_DRIVE, FORCE_MOUNT);
+			if(0 != FileSystemResult){
+				printf("Mounting SD card failed \n\r");
+			}
+		}
+	}else{
+		printf("SD card failed \n\r");
+	}
+
+}
+
+Retcode_T searchForFileOnSdCard(const char * filename, FILINFO * fileData){
+
+	if(0  == f_stat(filename, fileData)){
+		printf("File %s found on SD card. \n\r"	,filename);
+		return RETCODE_OK;
+	}
+	else{
+		printf(	"File %s does not exist. \n\r"	,filename);
+		return	RETCODE_FAILURE;
+	}
+}
+
+void readDataFromFileOnSdCard(const char* filename){
+	FRESULT fileSystemResult;
+	FILINFO fileInfo;
+	char bufferRead[UINT16_C(512)];
+	UINT bytesRead;
+	int i=0;
+	DEVICE_NAME = calloc(96, sizeof(char));
+	WLAN_SSID = calloc(128, sizeof(char));
+	WLAN_PSK = calloc(128, sizeof(char));
+	DEST_SERVER_HOST = calloc(20, sizeof(char));
+	DEST_SERVER_PORT = calloc(10, sizeof(char));
+	INTER_REQUEST_INTERVAL = calloc(20, sizeof(char));
+
+	if(RETCODE_OK == searchForFileOnSdCard(filename,&fileInfo)){
+		f_open(&fileObject, filename, FA_OPEN_EXISTING | FA_READ);
+		f_lseek(&fileObject, FIRST_LOCATION);
+        fileSystemResult = f_read(&fileObject, bufferRead, fileInfo.fsize,&bytesRead);
+        if((fileSystemResult !=0) || (fileInfo.fsize != bytesRead)){
+        	printf("Error: Cannot read file %s \n\r",filename);
+        }
+        else{
+        	bufferRead[bytesRead] ='\0';
+        	printf("Read data from file %s \n\r",filename);
+        	int j=0,tipo=1;
+        	for(i=0;i<bytesRead;i++){
+        		if(bufferRead[i]=='='){
+        			i++;
+        			j=0;
+        			while(bufferRead[i+1]!='\n'){
+						switch(tipo){
+							case t_DEVICE_NAME:
+								DEVICE_NAME[j] = bufferRead[i];
+								break;
+							case t_WLAN_SSID:
+								WLAN_SSID[j] = bufferRead[i];
+								break;
+							case t_WLAN_PSK:
+								WLAN_PSK[j] = bufferRead[i];
+								break;
+							case t_DEST_SERVER_HOST:
+								DEST_SERVER_HOST[j] = bufferRead[i];
+								break;
+							case t_DEST_SERVER_PORT:
+								DEST_SERVER_PORT[j] = bufferRead[i];
+								break;
+							case t_INTER_REQUEST_INTERVAL:
+								INTER_REQUEST_INTERVAL[j] = bufferRead[i];
+								break;
+							default:
+								if(bufferRead[i]=='Y' || bufferRead[i]=='E' || bufferRead[i]=='S')
+									typesSensors[tipo-7]=true;
+								else
+									typesSensors[tipo-7]=false;
+								break;
+						}
+        				j++;i++;
+        			}
+        			tipo++;
+
+        		}
+        	}
+
+        	printf("%s-%s-%s-%s-%s-%s-%d-%d-%d-%d-%d-%d|\n\r",DEVICE_NAME,WLAN_SSID,WLAN_PSK,DEST_SERVER_HOST,DEST_SERVER_PORT,INTER_REQUEST_INTERVAL,
+        			typesSensors[0],typesSensors[1],typesSensors[2],typesSensors[3],typesSensors[4],typesSensors[5]);
+
+        }
+        f_close(&fileObject);
+	}else{
+		printf("No file with name %s exists on the SD card \n\r",filename);
+	}
+}
+
 static Retcode_T connectToWLAN(void)
 {
     Retcode_T retcode;
@@ -88,6 +202,9 @@ static Retcode_T connectToWLAN(void)
         return retcode;
     }
 
+    InitSdCard();
+
+    readDataFromFileOnSdCard(FILE_NAME);
 
     retcode = NetworkConfig_SetIpDhcp(NULL);
     if (RETCODE_OK != retcode)
@@ -151,7 +268,7 @@ static retcode_t httpGetResponseCallback(HttpSession_T *httpSession, Msg_T *http
 {
     BCDS_UNUSED(httpSession);
 
-    xTimerStart(triggerHttpRequestTimerHandle, INTER_REQUEST_INTERVAL / portTICK_PERIOD_MS);
+    xTimerStart(triggerHttpRequestTimerHandle, (const TickType_t)atoi(INTER_REQUEST_INTERVAL) / portTICK_PERIOD_MS);
 
     if (RC_OK != status)
     {
@@ -220,12 +337,12 @@ static void httpGetTask(void* parameter)
         retVal = NetworkConfig_GetIpAddress((uint8_t*) DEST_SERVER_HOST, &destServerAddress);
         if (RETCODE_OK != retVal)
         {
-            printf("httpGetTask: unable to resolve hostname " DEST_SERVER_HOST ". error=%d.\r\n", retcode);
+            printf("httpGetTask: unable to resolve hostname %s. error=%d.\r\n", DEST_SERVER_HOST,retcode);
         }
         if (RETCODE_OK == retVal)
         {
 
-            retcode = HttpClient_initRequest(&destServerAddress, Ip_convertIntToPort(DEST_SERVER_PORT), &httpMessage);
+            retcode = HttpClient_initRequest(&destServerAddress, Ip_convertIntToPort(atoi(DEST_SERVER_PORT)), &httpMessage);
 
             if (RC_OK != retcode)
             {
@@ -273,7 +390,7 @@ static void httpGetTask(void* parameter)
         if (RETCODE_OK != retVal)
         {
             Retcode_RaiseError(retVal);
-            xTimerStart(triggerHttpRequestTimerHandle, INTER_REQUEST_INTERVAL / portTICK_PERIOD_MS);
+            xTimerStart(triggerHttpRequestTimerHandle, (const TickType_t)atoi(INTER_REQUEST_INTERVAL) / portTICK_PERIOD_MS);
         }
     }
 }
@@ -326,7 +443,6 @@ static char* receiveBufferFromSensors(void){
 
     char  *buffer = calloc(1024, sizeof(char));
     char *aux;
-
 
 	strcat(buffer,"{\"xdk2mam\":[");
 
@@ -471,17 +587,17 @@ static void httpPostTask(void* parameter)
 
    while (1)
     {
-	   	xSemaphoreTake(semPost,( TickType_t ) INTER_REQUEST_INTERVAL);
+	   	xSemaphoreTake(semPost,(const TickType_t)atoi(INTER_REQUEST_INTERVAL));
 
         Ip_Address_T destServerAddress;
         retVal = NetworkConfig_GetIpAddress((uint8_t*) DEST_SERVER_HOST, &destServerAddress);
         if (RETCODE_OK != retVal)
         {
-            printf("httpPostTask: unable to resolve hostname " DEST_SERVER_HOST ". error=%d.\r\n", (int) retVal);
+            printf("httpPostTask: unable to resolve hostname %s. error=%d.\r\n", DEST_SERVER_HOST, (int) retVal);
         }
         if (RETCODE_OK == retVal)
         {
-            retcode = HttpClient_initRequest(&destServerAddress, Ip_convertIntToPort(DEST_SERVER_PORT), &httpMessage);
+            retcode = HttpClient_initRequest(&destServerAddress, Ip_convertIntToPort(atoi(DEST_SERVER_PORT)), &httpMessage);
 
             if (RC_OK != retcode)
             {
@@ -689,6 +805,7 @@ void appInitSystem(void* cmdProcessorHandle, uint32_t param2)
     Retcode_T returnValue = RETCODE_OK;
     AppCmdProcessorHandle = (CmdProcessor_T *) cmdProcessorHandle;
 
+
     semPost = xSemaphoreCreateBinary();
 
     retcode_t rc = RC_OK;
@@ -757,13 +874,13 @@ void appInitSystem(void* cmdProcessorHandle, uint32_t param2)
 		return;
 	}
 
-	triggerHttpRequestTimerHandle = xTimerCreate("triggerXDK2MAMRequestTimer", INTER_REQUEST_INTERVAL / portTICK_RATE_MS, pdFALSE, NULL, triggerHttpRequestTimerCallback);
+	triggerHttpRequestTimerHandle = xTimerCreate("triggerXDK2MAMRequestTimer", (const TickType_t)atoi(INTER_REQUEST_INTERVAL) / portTICK_RATE_MS, pdFALSE, NULL, triggerHttpRequestTimerCallback);
 	if (triggerHttpRequestTimerHandle == NULL)
 	{
 		printf("Failed to create the triggerRequestTimer\r\n");
 		return;
 	}
-	BaseType_t requestTimerStarted = xTimerStart(triggerHttpRequestTimerHandle, INTER_REQUEST_INTERVAL / portTICK_RATE_MS);
+	BaseType_t requestTimerStarted = xTimerStart(triggerHttpRequestTimerHandle, (const TickType_t)atoi(INTER_REQUEST_INTERVAL) / portTICK_RATE_MS);
 	if (requestTimerStarted == pdFALSE)
 	{
 		printf("Failed to start the triggerRequestTimer\r\n");

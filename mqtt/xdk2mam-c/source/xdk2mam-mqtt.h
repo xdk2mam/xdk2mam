@@ -4,7 +4,7 @@
 
 #include "BCDS_Retcode.h"
 
-#define MAX_SENSORS_ARRAY 6
+#define MAX_SENSORS_ARRAY 7
 
 typedef enum{
 	ENVIROMENTAL = 0,
@@ -12,7 +12,8 @@ typedef enum{
 	GYROSCOPE = 2,
 	INERTIAL = 3,
 	LIGHT = 4,
-	MAGNETOMETER = 5
+	MAGNETOMETER = 5,
+	ACOUSTIC = 6
 }types_of_sensors;
 
 #define LOG_MODULE "NTP"

@@ -33,17 +33,19 @@
 #include "InertialSensor.h"
 #include "LightSensor.h"
 #include "Magnetometer.h"
+#include "Acoustic.h"
 
 #include "XdkSensorHandle.h"
 
 // Global array of all sensors => true : enable -- false : disable
-bool typesSensors[6] = {
+bool typesSensors[7] = {
 						true, //ENVIROMENTAL
 						true, //ACCELEROMETER
 						true, //GYROSCOPE
 						true, //INERTIAL
 						true, //LIGHT
-						true  //MAGNETOMETER
+						true, //MAGNETOMETER
+						true  //ACOUSTIC
 					};
 
 static CmdProcessor_T *AppCmdProcessor;
@@ -170,6 +172,9 @@ static char* receiveBufferFromSensors(void){
 					break;
 				case MAGNETOMETER:
 					aux = processMagnetometerData(null,0);
+					break;
+				case ACOUSTIC:
+					aux = processAcousticData(null,0);
 					break;
 
 		    }
@@ -611,6 +616,10 @@ static void Init(void)
 						case MAGNETOMETER:
 							magnetometerSensorInit();
 							break;
+						case ACOUSTIC:
+							acousticSensorInit();
+							break;
+
 
 					}
 				}

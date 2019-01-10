@@ -8,6 +8,11 @@
 
 #define MAX_SENSORS_ARRAY 7
 
+#define DEFAULT_LOGICAL_DRIVE   ""
+#define DRIVE_ZERO  UINT8_C(0)
+#define FORCE_MOUNT UINT8_C(1)
+#define FIRST_LOCATION UINT8_C(0)
+
 typedef enum{
 	ENVIROMENTAL = 0,
 	ACCELEROMETER = 1,
@@ -18,6 +23,15 @@ typedef enum{
 	ACOUSTIC = 6
 }types_of_sensors;
 
+typedef enum{
+	t_DEVICE_NAME = 1,
+	t_WLAN_SSID = 2,
+	t_WLAN_PSK = 3,
+	t_DEST_SERVER_HOST = 4,
+	t_DEST_SERVER_PORT = 5,
+	t_INTER_REQUEST_INTERVAL = 6
+};
+
 
 #define LOG_MODULE "NTP"
 #define SNTP_DEFAULT_PORT UINT16_C(123)
@@ -27,36 +41,12 @@ typedef enum{
  */
 #define SNTP_DEFAULT_ADDR "129.6.15.28"
 
+#define FILE_NAME "config.cfg"
+
 #define NTP_PACKET_SIZE                                                        \
   UINT8_C(48)
 #define NTP_DNS_TIMEOUT_IN_S UINT16_C(5)
 #define NTP_DNS_RETRY_INTERVAL_IN_MS UINT16_C(100)
-
-/**
- * XDK Device ID/Name.
- */
-#define DEVICE_NAME			"XDK-device-id"
-
-/**
- * WLAN_CONNECT_WPA_SSID is the SSID of the WIFI network you want to connect to.
- */
-#define WLAN_SSID                        "YourWifiNetwork"
-/**
- * WLAN_CONNECT_WPA_PASS is the WPA/WPA2 passphrase (pre-shared key) of your WIFI network.
- */
-#define WLAN_PSK                         "YourWifiPassword"
-
-/**
- * DEST_SERVER_HOST is the host name of the web server we will send HTTP requests to.
- * If you want to test this example without setting up your own server, you can use publicly available services.
- */
-#define DEST_SERVER_HOST                 "192.168.0.4"
-
-/**
- * DEST_SERVER_PORT is the TCP port to which we will send HTTP requests to.
- * The default of 80 should be fine for most applications.
- */
-#define DEST_SERVER_PORT                UINT16_C(8080)
 
 
 /**
@@ -98,7 +88,6 @@ typedef enum{
 /**
  * The time we wait (in milliseconds) between sending HTTP requests.
  */
-#define INTER_REQUEST_INTERVAL          UINT32_C(30000)
 
 
 /**

@@ -31,10 +31,12 @@
 #include "InertialSensor.h"
 #include "LightSensor.h"
 #include "Magnetometer.h"
+#include "Acoustic.h"
 #include "semphr.h"
 #include "BCDS_SDCard_Driver.h"
 #include "ff.h"
 #include "fs.h"
+#include "math.h"
 #include "BCDS_BlePeripheral.h"
 #include "BCDS_BidirectionalService.h"
 
@@ -56,19 +58,19 @@ static SemaphoreHandle_t BleWakeUpSyncSemphr = NULL;
 
 
 // Global array of all sensors => true : enable -- false : disable
-bool typesSensors[6] = {
+bool typesSensors[7] = {
 						true, //ENVIROMENTAL
 						true, //ACCELEROMETER
 						true, //GYROSCOPE
 						true, //INERTIAL
 						true, //LIGHT
-						true  //MAGNETOMETER
+						true, //MAGNETOMETER
+						true, //ACOUSTIC
 					};
 
 char* DEVICE_NAME;
 char* INTER_REQUEST_INTERVAL;
 char* INTERVAL_STREAM_DIVIDER_BLE;
-
 
 static void dataReceived(uint8_t *rxBuffer,uint8_t rxDataLenght){
 	uint8_t receiveBuffer[UINT8_C(24)];
@@ -108,6 +110,7 @@ static Retcode_T ServalPalSetup(void)
         ServalPalWiFi_StateChangeInfo_T stateChangeInfo = { SERVALPALWIFI_OPEN, INT16_C(0) };
         returnValue = ServalPalWiFi_NotifyWiFiEvent(SERVALPALWIFI_STATE_CHANGE, &stateChangeInfo);
     }
+
     return returnValue;
 }
 
@@ -239,6 +242,9 @@ static char* receiveBufferFromSensors(void){
 					break;
 				case MAGNETOMETER:
 					aux = processMagnetometerData(null,0);
+					break;
+				case ACOUSTIC:
+					aux = processAcousticData(null,0);
 					break;
 
 		    }
@@ -409,6 +415,9 @@ void appInitSystem(void* cmdProcessorHandle, uint32_t param2)
 					break;
 				case MAGNETOMETER:
 					magnetometerSensorInit();
+					break;
+				case ACOUSTIC:
+					acousticSensorInit();
 					break;
 
 		    }

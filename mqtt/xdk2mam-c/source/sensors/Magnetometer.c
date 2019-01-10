@@ -31,9 +31,7 @@ char* processMagnetometerData(void * param1, uint32_t param2)
 {
     BCDS_UNUSED(param1);
     BCDS_UNUSED(param2);
-
     char  *buffer = calloc(255, sizeof(char));
-
     Retcode_T sensorApiRetValue = (Retcode_T) RETCODE_FAILURE;
     Magnetometer_XyzData_T getMagData =
             { INT32_C(0), INT32_C(0), INT32_C(0), INT32_C(0) };
@@ -42,7 +40,7 @@ char* processMagnetometerData(void * param1, uint32_t param2)
     if ( RETCODE_OK == sensorApiRetValue)
     {
     	//microtesla
-        sprintf(buffer,"{\"sensorType\":\"Magnetometer\",\"data\":[{\"name\":\"x\",\"value\":\"%ld\"},{\"name\":\"y\",\"value\":\"%ld\"},{\"name\":\"z\",\"value\":\"%ld\"}]}",
+        sprintf(buffer,"{\"sensor\":\"Magnetometer\",\"data\":[{\"x\":\"%ld\"},{\"y\":\"%ld\"},{\"z\":\"%ld\"}]}",
 							(long int) getMagData.xAxisData, (long int) getMagData.yAxisData, (long int) getMagData.zAxisData);
     }
     else

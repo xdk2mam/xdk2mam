@@ -39,7 +39,7 @@ char* processAccelData(void * param1, uint32_t param2)
 
     if ( RETCODE_OK == Accelerometer_readXyzGValue(xdkAccelerometers_BMA280_Handle, &getaccelData))
     {
-        sprintf(buffer,"{\"sensor\":\"Accelerometer\",\"data\":[{\"x\":\"%ld\"},{\"y\":\"%ld\"},{\"z\":\"%ld\"}]}",
+        sprintf(buffer,"{\"sensor\":\"Accel\",\"data\":[{\"x\":\"%ld\"},{\"y\":\"%ld\"},{\"z\":\"%ld\"}]}",
 							(long int) getaccelData.xAxisData, (long int) getaccelData.yAxisData, (long int) getaccelData.zAxisData);
     }
     else

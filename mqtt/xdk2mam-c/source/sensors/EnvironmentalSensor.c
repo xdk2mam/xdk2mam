@@ -42,7 +42,7 @@ char * processEnvSensorData(void * param1, uint32_t param2)
     if ( RETCODE_OK == returnValue)
     {
 
-       sprintf(buffer,"{\"sensorType\": \"Environmental\",\"data\":[{\"name\":\"Pressure\",\"value\":\"%ld\"},{\"name\":\"Temperature\",\"value\":\"%ld\"},{\"name\":\"Humidity\",\"value\":\"%ld\"}]}",
+       sprintf(buffer,"{\"sensor\": \"Environmental\",\"data\":[{\"Pressure\":\"%ld\"},{\"Temp\":\"%ld\"},{\"Humidity\":\"%ld\"}]}",
         		(long int) bme280.pressure, (long int) bme280.temperature, (long int) bme280.humidity);
 
     }
@@ -56,24 +56,22 @@ char * processEnvSensorData(void * param1, uint32_t param2)
 }
 
 
-
 Retcode_T environmentalSensorInit(void)
 {
+    Retcode_T returnValue = (Retcode_T) RETCODE_FAILURE;
 
-	Retcode_T returnValue = (Retcode_T) RETCODE_FAILURE;
-
-	/*initialize Environmental sensor*/
-	returnValue = Environmental_init(xdkEnvironmental_BME280_Handle);
-	if ( RETCODE_OK == returnValue)
-	{
-		printf("Environmental Sensor initialization Success\n\r");
-	}
-	else
-	{
-		printf("Environmental Sensor initialization Failed\n\r");
-	}
-	return returnValue;
-	}
+    /*initialize Environmental sensor*/
+    returnValue = Environmental_init(xdkEnvironmental_BME280_Handle);
+    if ( RETCODE_OK == returnValue)
+    {
+        printf("Environmental Sensor initialization Success\n\r");
+    }
+    else
+    {
+        printf("Environmental Sensor initialization Failed\n\r");
+    }
+    return returnValue;
+}
 
 Retcode_T environmentalSensorDeinit(void)
 {

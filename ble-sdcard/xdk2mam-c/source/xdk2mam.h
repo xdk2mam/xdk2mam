@@ -6,7 +6,7 @@
 #include "BCDS_CmdProcessor.h"
 /* local type and macro definitions */
 
-#define MAX_SENSORS_ARRAY 6
+#define MAX_SENSORS_ARRAY 7
 
 #define DEFAULT_LOGICAL_DRIVE   ""
 #define DRIVE_ZERO  UINT8_C(0)
@@ -22,7 +22,8 @@ typedef enum{
 	GYROSCOPE = 2,
 	INERTIAL = 3,
 	LIGHT = 4,
-	MAGNETOMETER = 5
+	MAGNETOMETER = 5,
+	ACOUSTIC = 6
 }types_of_sensors;
 
 typedef enum{

@@ -42,6 +42,7 @@ char* processGyroData(void * param1, uint32_t param2)
     BCDS_UNUSED(param2);
 
     Retcode_T advancedApiRetValue = (Retcode_T) RETCODE_FAILURE;
+
     Gyroscope_XyzData_T getMdegData = { INT32_C(0), INT32_C(0), INT32_C(0) };
     /* read Raw sensor data */
 
@@ -54,7 +55,7 @@ char* processGyroData(void * param1, uint32_t param2)
     {
 
 
-        sprintf(buffer,"{\"sensorType\":\"Gyroscope\",\"data\":[{\"name\":\"x\",\"value\":\"%ld\"},{\"name\":\"y\",\"value\":\"%ld\"},{\"name\":\"z\",\"value\":\"%ld\"}]}",
+        sprintf(buffer,"{\"sensor\":\"Gyroscope\",\"data\":[{\"x\":\"%ld\"},{\"y\":\"%ld\"},{\"z\":\"%ld\"}]}",
 							(long int) getMdegData.xAxisData, (long int) getMdegData.yAxisData, (long int) getMdegData.zAxisData);
 
     }

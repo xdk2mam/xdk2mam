@@ -73,6 +73,7 @@ GYROSCOPE=YES
 INERTIAL=YES
 LIGHT=YES
 MAGNETOMETER=YES
+ACOUSTIC=YES
 ```
 
 Save the values, extract the micro SD card and carefully insert it into the XDK SD slot (contacts up). 

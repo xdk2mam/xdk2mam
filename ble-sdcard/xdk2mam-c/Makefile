@@ -47,6 +47,7 @@ export BCDS_XDK_APP_SOURCE_FILES = \
 	$(BCDS_APP_SOURCE_DIR_SENSORS)/InertialSensor.c \
 	$(BCDS_APP_SOURCE_DIR_SENSORS)/LightSensor.c \
 	$(BCDS_APP_SOURCE_DIR_SENSORS)/Magnetometer.c \
+	$(BCDS_APP_SOURCE_DIR_SENSORS)/Acoustic.c \
 
 	
 .PHONY: clean debug release flash_debug_bin flash_release_bin

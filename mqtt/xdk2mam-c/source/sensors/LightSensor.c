@@ -50,7 +50,6 @@ char* processLightSensorData(void * param1, uint32_t param2)
     BCDS_UNUSED(param1);
     BCDS_UNUSED(param2);
     Retcode_T returnValue = (Retcode_T) RETCODE_FAILURE;
-
     char  *buffer = calloc(255, sizeof(char));
 
 
@@ -65,7 +64,7 @@ char* processLightSensorData(void * param1, uint32_t param2)
     }
     else
     {
-        sprintf(buffer,"{\"sensorType\":\"Light\",\"data\":[{\"name\":\"milliLux\",\"value\":\"%d\"}]}",
+        sprintf(buffer,"{\"sensor\":\"Light\",\"data\":[{\"milliLux\":\"%d\"}]}",
 							(unsigned int) milliLuxData);
     }
 
@@ -95,6 +94,7 @@ Retcode_T lightsensorInit(void)
 
     return returnValue;
 }
+
 Retcode_T lightsensorDeinit(void)
 {
     Retcode_T returnValue = (Retcode_T) RETCODE_FAILURE;

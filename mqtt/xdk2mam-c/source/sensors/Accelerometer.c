@@ -34,11 +34,12 @@ char* processAccelData(void * param1, uint32_t param2)
 
     char  *buffer = calloc(255, sizeof(char));
 
+
     Accelerometer_XyzData_T getaccelData = { INT32_C(0), INT32_C(0), INT32_C(0) };
 
     if ( RETCODE_OK == Accelerometer_readXyzGValue(xdkAccelerometers_BMA280_Handle, &getaccelData))
     {
-        sprintf(buffer,"{\"sensorType\":\"Accelerometer\",\"data\":[{\"name\":\"x\",\"value\":\"%ld\"},{\"name\":\"y\",\"value\":\"%ld\"},{\"name\":\"z\",\"value\":\"%ld\"}]}",
+        sprintf(buffer,"{\"sensor\":\"Accel\",\"data\":[{\"x\":\"%ld\"},{\"y\":\"%ld\"},{\"z\":\"%ld\"}]}",
 							(long int) getaccelData.xAxisData, (long int) getaccelData.yAxisData, (long int) getaccelData.zAxisData);
     }
     else
@@ -54,6 +55,7 @@ Retcode_T accelerometerSensorInit(void)
     /* Return value for Timer start */
 
     Retcode_T returnVal = RETCODE_OK;
+
     Accelerometer_InterruptChannel_T interruptChannel = ACCELEROMETER_BMA280_INTERRUPT_CHANNEL1;
     Accelerometer_InterruptType_T interruptType = ACCELEROMETER_BMA280_SLOPE_INTERRUPT;
     Accelerometer_ConfigSlopeIntr_T slopeInterruptConfig;
@@ -61,6 +63,7 @@ Retcode_T accelerometerSensorInit(void)
     /*initialize accel*/
 
     returnVal = Accelerometer_init(xdkAccelerometers_BMA280_Handle);
+
     if (RETCODE_OK == returnVal)
     {
 
