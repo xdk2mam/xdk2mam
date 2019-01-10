@@ -19,7 +19,7 @@ The following repository has either files for the Bosch XDK 110 and for the data
 # Instructions
 
 ## Requirements
-In order to be able to run the code on this repo you will to [download XDK Workbench](https://xdk.bosch-connectivity.com/software-downloads), have a XDK 110 and install Node 8 on the computer you are going to use as listener server.
+In order to be able to run the code on this repo you will need to [download XDK Workbench](https://xdk.bosch-connectivity.com/software-downloads), have a XDK 110 and install Node 8 on the computer you are going to use as listener server.
 
 ## Setting up your Node listener
 Because as soon as you flash the C program to your XDK it starts sending the sensor's data, it might be a good idea to start first the Node server that will be listening. Download and install Node.js and be sure to include npm package manager.
