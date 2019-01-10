@@ -16,10 +16,10 @@ This is an issue **we are reviewing actively with Bosch XDK team**. Until we syn
 
 # How do you want to connect?
 
-This repository has packages allowing the XDK110 to stream its sensors data through
+**This repository has packages for the XDK110 to stream its sensors data through:**
 
 - **[HTTP](https://github.com/xdk2mam/xdk2mam/tree/master/http)** (WiFi on XDK will just post a request with the data to a given server)
-- **[HTTP-SD Card](https://github.com/xdk2mam/xdk2mam/tree/master/http-sdcard)** (Same as HTTP but with a config file placed on the microSD card that allow portability)
-- **[MQTT](https://github.com/xdk2mam/xdk2mam/tree/master/mqtt)** (Relay data to a MQTT broker)
-- **[BLE-SDCARD](https://github.com/xdk2mam/xdk2mam/tree/master/ble-sdcard)** (Send sensor's data from XDK110 to your Raspberry using Bluethoot Low Energy)
-- **[DMP](https://github.com/xdk2mam/xdk2mam/tree/master/dmp)** (Our our template to interact with the IOTA Data Marketplace)
+- **[HTTP-SD Card](https://github.com/xdk2mam/xdk2mam/tree/master/http-sdcard)** (same as HTTP but with a config file placed on the microSD card to allow portability)
+- **[MQTT](https://github.com/xdk2mam/xdk2mam/tree/master/mqtt)** (relay data to a MQTT Broker)
+- **[BLE-SDCARD](https://github.com/xdk2mam/xdk2mam/tree/master/ble-sdcard)** (send sensor's data from XDK110 to your Raspberry using Bluethoot Low Energy)
+- **[DMP](https://github.com/xdk2mam/xdk2mam/tree/master/dmp)** (our our template to interact with the IOTA Data Marketplace)
