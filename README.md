@@ -6,7 +6,7 @@ On the other side, IOTA's [Masked Authenticated Messaging (MAM)](https://blog.io
 
 [XDK2MAM](https://xdk2mam.io) main goal is to provide open source software to allow interaction between this powerful hardware and the promising IOTA Tangle.
 
-The following repository has either **C code** for the Bosch XDK 110 and for the data receiver in **Node.js** where the attach to Tangle via MAM happens, featuring the different methods the XDK110 is capable of (HTTP/MQTT/BLE)
+The following repository has either **C code** for the Bosch XDK110 and for the data receiver in **Node.js** where the attach to Tangle via MAM happens, featuring the different methods the XDK110 is capable of (HTTP/MQTT/BLE)
 
 # Current stable XDK Workbench version to compile this code is 3.4.0
 
@@ -16,7 +16,7 @@ This is an issue **we are reviewing actively with Bosch XDK team**. Until we syn
 
 # How do you want to connect?
 
-This repository has packages allowing the XDK 110 to stream its sensors data through
+This repository has packages allowing the XDK110 to stream its sensors data through
 
 - **[HTTP](https://github.com/xdk2mam/xdk2mam/tree/master/http)** (WiFi on XDK will just post a request with the data to a given server)
 - **[HTTP-SD Card](https://github.com/xdk2mam/xdk2mam/tree/master/http-sdcard)** (Same as HTTP but with a config file placed on the microSD card that allow portability)
