@@ -1,4 +1,4 @@
-# XDK2MAM is open source software to bridge the Bosch XDK 110 and IOTA Tangle
+# XDK2MAM is open source software to bridge the Bosch XDK110 and IOTA Tangle
 
 The [Bosch XDK110](https://xdk.bosch-connectivity.com) is a programmable sensor device & a prototyping platform for many IoT use cases, being used in the field of Internet of Production, mainly to measure the performance of industrial machinery.
 
