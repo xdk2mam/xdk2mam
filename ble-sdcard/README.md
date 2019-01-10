@@ -1,12 +1,13 @@
-# XDK2MAM Bluethooth Low Energy (BLE) WITH SD CARD
+# XDK2MAM Bluetooth Low Energy (BLE) WITH SD CARD
 The XDK provides several BLE APIs to manage the BLE functionality on the device. The interfaces can be used by applications in order to communicate via the ALPWISE BLE stack with surrounding BLE devices.
 A wide range of BLE functionalities can be achieved using the XDK, from configuration of the BLE controller according to the requirements of the designed XDK application, up to active BLE connections, including data
 exchange in both ways between the XDK and other BLE devices. 
 
 The following repository has either files for the Bosch XDK 110 and for the data receiver in Node.js where the attach to Tangle via MAM happens.
 
-**Note that the Node code provided here works only in Linux (aimed to Raspberry Pi mainly). If you want to set a receiver on other OS you can extend the solution by visiting the [Noble Repository](https://github.com/noble/noble)**
+**Note that the Node code provided here works for Linux (aimed to Raspberry Pi mainly). If you want to set a receiver on other OS you can extend the solution by visiting the [Noble Repository](https://github.com/noble/noble).**
 
+**Because the Node Bluetooth code relays on [Noble](https://github.com/noble/noble), and this project seems to have updated its dependencies only till Node 8, we recommend to use 8.10.0 version. We tested it with Node 9 and made it work. Node 10 and further versions will not install properly.**
 
 **This package uses a config file on a micro sd card, which makes possible to alter some values as the interval or the sensors used without need to recompile (you just change values in the config file and you are ready to go)**
 
@@ -18,7 +19,7 @@ The following repository has either files for the Bosch XDK 110 and for the data
 # Instructions
 
 ## Requirements
-In order to be able to run the code on this repo you will to [download XDK Workbench](https://xdk.bosch-connectivity.com/software-downloads), have a XDK 110 and insall Node on the computer you are going to use as listener server.
+In order to be able to run the code on this repo you will need to [download XDK Workbench](https://xdk.bosch-connectivity.com/software-downloads), have a XDK 110 and install Node 8 on the computer you are going to use as listener server.
 
 ## Setting up your Node listener
 Because as soon as you flash the C program to your XDK it starts sending the sensor's data, it might be a good idea to start first the Node server that will be listening. Download and install Node.js and be sure to include npm package manager.
@@ -26,7 +27,7 @@ Because as soon as you flash the C program to your XDK it starts sending the sen
 Navigate to your xdk2mam-nodejs folder and run the following command
 
 ```
-npm install
+npm i
 ```
 Once the installation finishes, edit the xdk2mam-ble.js file to add your Full Node (be sure to use one with PoW enabled).
 
@@ -42,15 +43,15 @@ And also change the seed value to your seed so you can open your own channel
 const seed = "ENTERYOURSEEDITBWTGFTAFBZ9SXDSUNANZA9TGAOSIICFFOBHNUXQCFZWO9DSPUQUIZIJXOPHBY99999";
 ```
 
-Once this is done, start the node server
+Once this is done, start the node server (notice that you need to be rooted or use sudo)
 
 ```
-node xdk2mam-ble.js enter-your-device-id (this value is defined on the first line of the config file)
+sudo node xdk2mam-ble.js enter-your-device-id (this value is defined on the first line of the config.cfg file)
 ```
 Now we are ready to start with the XDK software.
 
 
-## Flashing your XDK: wifi and sensors configuration
+## Flashing your XDK: sensors configuration
 Open XDK Workbench and go to File -> Import. Choose General > Projects from Folder or Archive and select the folder ***xdk2mam-c***. Accept to import project. 
 
 
@@ -82,4 +83,4 @@ If everything went fine you should see data on your console.
 
 
 
-![Sensors data on listening server](https://xdk2mam.io/assets/images/ble-screen.png)
+![Sensors data on listening server](https://xdk2mam.io/assets/images/ble-screen-pi.png)

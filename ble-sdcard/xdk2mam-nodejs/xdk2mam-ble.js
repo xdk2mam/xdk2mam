@@ -11,8 +11,8 @@ var Mam = require('./node_modules/xdk2mam/mam.client.js');
 
 // Enter your Node URL and port (be sure to use a node with PoW enabled)
 let iota = new IOTA({
-  'host': 'https://iota-3.de',//'http://173.212.193.59',
-  'port': '14267'
+  'host': 'http://you-pow-enabled-node',// (Check https://iota.dance/)
+  'port': '14265'
 });
 
 // Replace by your seed
