@@ -30,7 +30,7 @@ typedef enum{
 	t_DEST_SERVER_HOST = 4,
 	t_DEST_SERVER_PORT = 5,
 	t_INTER_REQUEST_INTERVAL = 6
-};
+}types_sd_card_inputs;
 
 
 #define LOG_MODULE "NTP"
@@ -47,6 +47,24 @@ typedef enum{
   UINT8_C(48)
 #define NTP_DNS_TIMEOUT_IN_S UINT16_C(5)
 #define NTP_DNS_RETRY_INTERVAL_IN_MS UINT16_C(100)
+
+
+/**
+ * WLAN_CONNECT_WPA_SSID is the SSID of the WIFI network you want to connect to.
+ */
+/**
+ * WLAN_CONNECT_WPA_PASS is the WPA/WPA2 passphrase (pre-shared key) of your WIFI network.
+ */
+
+/**
+ * DEST_SERVER_HOST is the host name of the web server we will send HTTP requests to.
+ * If you want to test this example without setting up your own server, you can use publicly available services.
+ */
+
+/**
+ * DEST_SERVER_PORT is the TCP port to which we will send HTTP requests to.
+ * The default of 80 should be fine for most applications.
+ */
 
 
 /**
@@ -76,13 +94,13 @@ typedef enum{
  * POST_REQUEST_CUSTOM_HEADER_0 is a custom header which is sent along with the
  * POST request. It's meant to demonstrate how to use custom header.
  */
-#define POST_REQUEST_CUSTOM_HEADER_0    "X-AuthToken: XDK2MAM\r\n"
+#define POST_REQUEST_CUSTOM_HEADER_0    "X-AuthToken: InsertCrypticAuthenticationToken\r\n"
 
 /**
  * POST_REQUEST_CUSTOM_HEADER_1 is a custom header which is sent along with the
  * POST request. It's meant to demonstrate how to use custom header.
  */
-#define POST_REQUEST_CUSTOM_HEADER_1    "X-Foobar: XDK2MAM\r\n"
+#define POST_REQUEST_CUSTOM_HEADER_1    "X-Foobar: AnotherCustomHeader\r\n"
 
 
 /**
@@ -106,6 +124,8 @@ typedef enum{
  * XDK. The maximum value that will work here is 512 bytes.
  */
 #define REQUEST_MAX_DOWNLOAD_SIZE       UINT32_C(512)
+
+#define APP_RESPONSE_FROM_HTTP_SERVER_POST_TIMEOUT      UINT32_C(25000)/**< Timeout for completion of HTTP rest client POST */
 
 /* local module global variable declarations */
 
