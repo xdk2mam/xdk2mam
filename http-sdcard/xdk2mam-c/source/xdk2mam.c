@@ -73,7 +73,7 @@ bool typesSensors[7] = {
 
 
 
-void InitSdCard(void){
+Retcode_T InitSdCard(void){
 
 	Retcode_T retVal =RETCODE_FAILURE;
 	FRESULT FileSystemResult = 0;
@@ -91,6 +91,7 @@ void InitSdCard(void){
 	}else{
 		printf("SD card failed \n\r");
 	}
+	return retVal;
 
 }
 
@@ -486,10 +487,13 @@ void AppController_Init(void * cmdProcessorHandle, uint32_t param2)
 
 void appInitSystem(void* cmdProcessorHandle, uint32_t param2)
 {
-	InitSdCard();
+	Retcode_T rt = RETCODE_FAILURE;
 
-    readDataFromFileOnSdCard(FILE_NAME);
+	rt = InitSdCard();
 
+	if(rt != RETCODE_FAILURE)
+		readDataFromFileOnSdCard(FILE_NAME);
+	
 
 	WLAN_Setup_T WLANSetupInfo =
 	        {
@@ -554,6 +558,10 @@ void appInitSystem(void* cmdProcessorHandle, uint32_t param2)
 	   retcode = HTTPRestClient_Enable();
 	}
     if (RETCODE_OK != retcode){
+    	if(rt!= RETCODE_OK){
+    		printf("SD card failed!!! \n\r");
+    		return;
+    	}
     	Retcode_RaiseError(retcode);
 		printf("WLAN_Enable failed with %d \r\n", (int) retcode);
 		return;
