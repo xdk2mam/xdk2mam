@@ -29,7 +29,8 @@ typedef enum{
 	t_WLAN_PSK = 3,
 	t_DEST_SERVER_HOST = 4,
 	t_DEST_SERVER_PORT = 5,
-	t_INTER_REQUEST_INTERVAL = 6
+	t_INTER_REQUEST_INTERVAL = 6,
+	t_DEST_POST_PATH = 7
 }types_sd_card_inputs;
 
 
@@ -81,14 +82,6 @@ typedef enum{
  * Change this value if you use your own web server.
  */
 #define DEST_GET_PATH                   "/status"
-
-/**
- * DEST_POST_PATH is the path relative to the DEST_SERVER_HOST that we will send
- * the HTTP POST request to.
- *
- * Change this value if you use your own web server.
- */
-#define DEST_POST_PATH                  "/sensors"
 
 /**
  * POST_REQUEST_CUSTOM_HEADER_0 is a custom header which is sent along with the

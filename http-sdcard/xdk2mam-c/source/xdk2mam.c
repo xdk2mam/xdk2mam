@@ -56,6 +56,7 @@ char* WLAN_PSK = NULL;
 char* DEST_SERVER_HOST = NULL;
 char* DEST_SERVER_PORT = NULL;
 char* INTER_REQUEST_INTERVAL = NULL;
+char* DEST_POST_PATH = NULL;
 HTTPRestClient_Config_T HTTPRestClientConfigInfo;
 
 
@@ -119,6 +120,7 @@ void readDataFromFileOnSdCard(const char* filename){
 	DEST_SERVER_HOST = calloc(20, sizeof(char));
 	DEST_SERVER_PORT = calloc(10, sizeof(char));
 	INTER_REQUEST_INTERVAL = calloc(20, sizeof(char));
+	DEST_POST_PATH = calloc(20, sizeof(char));
 
 	if(RETCODE_OK == searchForFileOnSdCard(filename,&fileInfo)){
 		f_open(&fileObject, filename, FA_OPEN_EXISTING | FA_READ);
@@ -154,6 +156,9 @@ void readDataFromFileOnSdCard(const char* filename){
 								break;
 							case t_INTER_REQUEST_INTERVAL:
 								INTER_REQUEST_INTERVAL[j] = bufferRead[i];
+								break;
+							case t_DEST_POST_PATH:
+								DEST_POST_PATH[j] = bufferRead[i];
 								break;
 							default:
 								if(bufferRead[i]=='Y' || bufferRead[i]=='E' || bufferRead[i]=='S')
