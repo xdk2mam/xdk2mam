@@ -15,23 +15,21 @@ export BCDS_APP_SOURCE_DIR_SENSORS = $(BCDS_APP_DIR)/source/sensors
 #Please refer BCDS_CFLAGS_COMMON variable in application.mk file
 #and if any addition flags required then add that flags only in the below macro 
 #export BCDS_CFLAGS_COMMON =
-
-export BCDS_TARGET_BOARD = BSP_XDK110
+export XDK_CONNECTIVITY_BLE=0
+export XDK_CONNECTIVITY_LORA=0
+export XDK_CONNECTIVITY_LWM2M=0
+export XDK_CONNECTIVITY_MQTT=0
+export XDK_CONNECTIVITY_UDP=0
 
 # This variable should fully specify the build configuration of the Serval 
 # Stack library with regards the enabled and disabled features for the HTTPS Using TLS. 
+export SERVAL_TLS_MBEDTLS=1
 export SERVAL_ENABLE_TLS_CLIENT=1
 export SERVAL_ENABLE_TLS_ECC=1
 export SERVAL_ENABLE_TLS_PSK=0
-export SERVAL_ENABLE_DTLS_PSK=0
-export SERVAL_ENABLE_DTLS_ECC=1
 export SERVAL_MAX_NUM_MESSAGES=8
 export SERVAL_MAX_SIZE_APP_PACKET=900
 export SERVAL_ENABLE_TLS=1
-export EscTls_CIPHER_SUITE=TLS_RSA_WITH_AES_128_CBC_SHA
-
-export BCDS_SERVALSTACK_MACROS = \
-	-D SERVAL_CYCURTLS_HANDSHAKE_BUFFER_SIZE=5500
 
 #List all the application header file under variable BCDS_XDK_INCLUDES in a similar pattern as below
 export BCDS_XDK_INCLUDES = \
@@ -47,6 +45,7 @@ export BCDS_XDK_APP_SOURCE_FILES = \
 	$(BCDS_APP_SOURCE_DIR_SENSORS)/InertialSensor.c \
 	$(BCDS_APP_SOURCE_DIR_SENSORS)/LightSensor.c \
 	$(BCDS_APP_SOURCE_DIR_SENSORS)/Magnetometer.c \
+	$(BCDS_APP_SOURCE_DIR_SENSORS)/Acoustic.c \
 
 	
 .PHONY: clean debug release flash_debug_bin flash_release_bin
@@ -69,11 +68,5 @@ flash_debug_bin:
 flash_release_bin: 
 	$(MAKE) -C $(BCDS_BASE_DIR)/xdk110/Common -f application.mk flash_release_bin
 
-cleanlint: 
-	$(MAKE) -C $(BCDS_BASE_DIR)/xdk110/Common -f application.mk cleanlint
-	
-lint: 
-	$(MAKE) -C $(BCDS_BASE_DIR)/xdk110/Common -f application.mk lint
-	
 cdt:
-	$(MAKE) -C $(BCDS_BASE_DIR)/xdk110/Common -f application.mk cdt	
+	$(MAKE) -C $(BCDS_BASE_DIR)/xdk110/Common -f application.mk cdt 

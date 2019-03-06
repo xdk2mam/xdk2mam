@@ -1,4 +1,4 @@
-#include "XDKAppInfo.h" 
+#include "XDKAppInfo.h"
 
 #undef BCDS_MODULE_ID  /* Module ID define before including Basics package*/
 #define BCDS_MODULE_ID XDK_APP_MODULE_ID_HTTP_XDK2MAM_CLIENT
@@ -11,17 +11,21 @@
 
 /* additional interface header files */
 
-#include "BCDS_WlanConnect.h"
+#include "XDK_WLAN.h"
+#include "XDK_ServalPAL.h"
+#include "XDK_HTTPRestClient.h"
+#include "XDK_SNTP.h"
+#include "BCDS_BSP_Board.h"
 #include "BCDS_NetworkConfig.h"
 #include "BCDS_CmdProcessor.h"
+#include "BCDS_Assert.h"
+#include "XDK_Utils.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
-#include <Serval_HttpClient.h>
-#include <Serval_XUdp.h>
-#include <Serval_Network.h>
+
 #include <Serval_Clock.h>
 #include <Serval_Log.h>
-#include "BCDS_ServalPal.h"
-#include "BCDS_ServalPalWiFi.h"
 #include "FreeRTOS.h"
 #include "timers.h"
 #include "Serval_Http.h"
@@ -36,56 +40,41 @@
 #include "ff.h"
 #include "fs.h"
 
-static xTaskHandle httpGetTaskHandle;
 static xTaskHandle httpPostTaskHandle;
 static xTimerHandle triggerHttpRequestTimerHandle;
 static uint32_t httpGetPageOffset = 0;
 static CmdProcessor_T CommandProcessorHandle;
 CmdProcessor_T *AppCmdProcessorHandle;
+static CmdProcessor_T * AppCmdProcessor;
 static uint32_t SysTime = UINT32_C(0);
 static FIL fileObject;
 static SemaphoreHandle_t semPost = NULL;
 
+char* DEVICE_NAME = NULL;
+char* WLAN_SSID = NULL;
+char* WLAN_PSK = NULL;
+char* DEST_SERVER_HOST = NULL;
+char* DEST_SERVER_PORT = NULL;
+char* INTER_REQUEST_INTERVAL = NULL;
+char* DEST_POST_PATH = NULL;
+HTTPRestClient_Config_T HTTPRestClientConfigInfo;
+
+
 // Global array of all sensors => true : enable -- false : disable
-bool typesSensors[6] = {
+bool typesSensors[7] = {
 						true, //ENVIROMENTAL
 						true, //ACCELEROMETER
 						true, //GYROSCOPE
 						true, //INERTIAL
 						true, //LIGHT
-						true  //MAGNETOMETER
+						true, //MAGNETOMETER
+						true  //ACOUSTIC
 					};
 
-char* DEVICE_NAME;
-char* WLAN_SSID;
-char* WLAN_PSK;
-char* DEST_SERVER_HOST;
-char* DEST_SERVER_PORT;
-char* INTER_REQUEST_INTERVAL;
-
-static Retcode_T ServalPalSetup(void)
-{
-    Retcode_T returnValue = RETCODE_OK;
-    returnValue = CmdProcessor_Initialize(&CommandProcessorHandle, "Serval PAL", TASK_PRIORITY_SERVALPAL_CMD_PROC, TASK_STACK_SIZE_SERVALPAL_CMD_PROC, TASK_QUEUE_LEN_SERVALPAL_CMD_PROC);
-    /* serval pal common init */
-    if (RETCODE_OK == returnValue)
-    {
-        returnValue = ServalPal_Initialize(&CommandProcessorHandle);
-    }
-    if (RETCODE_OK == returnValue)
-    {
-        returnValue = ServalPalWiFi_Init();
-    }
-    if (RETCODE_OK == returnValue)
-    {
-        ServalPalWiFi_StateChangeInfo_T stateChangeInfo = { SERVALPALWIFI_OPEN, INT16_C(0) };
-        returnValue = ServalPalWiFi_NotifyWiFiEvent(SERVALPALWIFI_STATE_CHANGE, &stateChangeInfo);
-    }
-    return returnValue;
-}
 
 
-void InitSdCard(void){
+
+Retcode_T InitSdCard(void){
 
 	Retcode_T retVal =RETCODE_FAILURE;
 	FRESULT FileSystemResult = 0;
@@ -103,6 +92,7 @@ void InitSdCard(void){
 	}else{
 		printf("SD card failed \n\r");
 	}
+	return retVal;
 
 }
 
@@ -130,6 +120,7 @@ void readDataFromFileOnSdCard(const char* filename){
 	DEST_SERVER_HOST = calloc(20, sizeof(char));
 	DEST_SERVER_PORT = calloc(10, sizeof(char));
 	INTER_REQUEST_INTERVAL = calloc(20, sizeof(char));
+	DEST_POST_PATH = calloc(20, sizeof(char));
 
 	if(RETCODE_OK == searchForFileOnSdCard(filename,&fileInfo)){
 		f_open(&fileObject, filename, FA_OPEN_EXISTING | FA_READ);
@@ -166,6 +157,9 @@ void readDataFromFileOnSdCard(const char* filename){
 							case t_INTER_REQUEST_INTERVAL:
 								INTER_REQUEST_INTERVAL[j] = bufferRead[i];
 								break;
+							case t_DEST_POST_PATH:
+								DEST_POST_PATH[j] = bufferRead[i];
+								break;
 							default:
 								if(bufferRead[i]=='Y' || bufferRead[i]=='E' || bufferRead[i]=='S')
 									typesSensors[tipo-7]=true;
@@ -188,240 +182,6 @@ void readDataFromFileOnSdCard(const char* filename){
 	}else{
 		printf("No file with name %s exists on the SD card \n\r",filename);
 	}
-}
-
-static Retcode_T connectToWLAN(void)
-{
-    Retcode_T retcode;
-
-    retcode = WlanConnect_Init();
-    if (RETCODE_OK != retcode)
-    {
-        return retcode;
-    }
-
-    InitSdCard();
-
-    readDataFromFileOnSdCard(FILE_NAME);
-
-    retcode = NetworkConfig_SetIpDhcp(NULL);
-    if (RETCODE_OK != retcode)
-    {
-        return retcode;
-    }
-
-    printf("Connecting to %s \r\n ", WLAN_SSID);
-
-    retcode = WlanConnect_WPA((WlanConnect_SSID_T) WLAN_SSID, (WlanConnect_PassPhrase_T) WLAN_PSK, NULL);
-    if (RETCODE_OK != retcode)
-    {
-        return retcode;
-    }
-
-    NetworkConfig_IpSettings_T currentIpSettings;
-    retcode = NetworkConfig_GetIpSettings(&currentIpSettings);
-    if (RETCODE_OK != retcode)
-    {
-        return retcode;
-    }
-    else
-    {
-        uint32_t ipAddress = Basics_htonl(currentIpSettings.ipV4);
-
-        char humanReadbleIpAddress[SERVAL_IP_ADDR_LEN] = { 0 };
-        int conversionStatus = Ip_convertAddrToString(&ipAddress, humanReadbleIpAddress);
-        if (conversionStatus < 0)
-        {
-            printf("Couldn't convert the IP address to string format \r\n");
-        }
-        else
-        {
-            printf("Connected to WPA network successfully \r\n");
-            printf(" Ip address of the device %s \r\n", humanReadbleIpAddress);
-        }
-    }
-
-    return retcode;
-}
-
-static retcode_t httpRequestSentCallback(Callable_T* caller, retcode_t callerStatus)
-{
-    BCDS_UNUSED(caller);
-
-    if (RC_OK == callerStatus)
-    {
-        printf("httpRequestSentCallback: HTTP request sent successfully.\r\n");
-    }
-    else
-    {
-        printf("httpRequestSentCallback: HTTP request failed to send. error=%d\r\n", callerStatus);
-        printf("httpRequestSentCallback: Restarting request timer\r\n");
-        xTimerStart(triggerHttpRequestTimerHandle, 10);
-    }
-
-    return RC_OK;
-}
-
-static retcode_t httpGetResponseCallback(HttpSession_T *httpSession, Msg_T *httpMessage, retcode_t status)
-{
-    BCDS_UNUSED(httpSession);
-
-    xTimerStart(triggerHttpRequestTimerHandle, (const TickType_t)atoi(INTER_REQUEST_INTERVAL) / portTICK_PERIOD_MS);
-
-    if (RC_OK != status)
-    {
-        printf("httpGetResponseCallback: error while receiving response to GET request. error=%d\r\n", status);
-        return RC_OK;
-    }
-    if (NULL == httpMessage)
-    {
-        printf("httpGetResponseCallback: received NULL as HTTP message. This should not happen.\r\n");
-        return RC_OK;
-    }
-
-    Http_StatusCode_T httpStatusCode = HttpMsg_getStatusCode(httpMessage);
-    if (Http_StatusCode_OK != httpStatusCode)
-    {
-        printf("httpGetResponseCallback: received HTTP status other than 200 OK. status=%d\r\n", httpStatusCode);
-    }
-    else
-    {
-        retcode_t retcode;
-        bool isLastPartOfMessage;
-        uint32_t pageContentSize;
-        retcode = HttpMsg_getRange(httpMessage, UINT32_C(0), &pageContentSize, &isLastPartOfMessage);
-        if (RC_OK != retcode)
-        {
-            printf("httpGetResponseCallback: failed to get range from message. error=%d\r\n", retcode);
-        }
-        else
-        {
-            const char* responseContent;
-            unsigned int responseContentLen;
-            HttpMsg_getContent(httpMessage, &responseContent, &responseContentLen);
-            printf("httpGetResponseCallback: successfully received a response: %.*s\r\n", responseContentLen, responseContent);
-
-            if (isLastPartOfMessage)
-            {
-                /* We're done with the GET request. Let's make a POST request. */
-                printf("httpGetResponseCallback: Server is up. Triggering the POST request.\r\n");
-                xTaskNotifyGive(httpPostTaskHandle);
-            }
-            else
-            {
-                /* We're not done yet downloading the page - let's make another request. */
-                printf("httpGetResponseCallback: there is still more to GET. Making another request.\r\n");
-                httpGetPageOffset += responseContentLen;
-                xTaskNotifyGive(httpGetTaskHandle);
-            }
-        }
-    }
-    return RC_OK;
-}
-
-static void httpGetTask(void* parameter)
-{
-    BCDS_UNUSED(parameter);
-    retcode_t retcode;
-    Retcode_T retVal;
-    Msg_T* httpMessage;
-
-    while (1)
-    {
-        ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-
-
-        Ip_Address_T destServerAddress;
-        retVal = NetworkConfig_GetIpAddress((uint8_t*) DEST_SERVER_HOST, &destServerAddress);
-        if (RETCODE_OK != retVal)
-        {
-            printf("httpGetTask: unable to resolve hostname %s. error=%d.\r\n", DEST_SERVER_HOST,retcode);
-        }
-        if (RETCODE_OK == retVal)
-        {
-
-            retcode = HttpClient_initRequest(&destServerAddress, Ip_convertIntToPort(atoi(DEST_SERVER_PORT)), &httpMessage);
-
-            if (RC_OK != retcode)
-            {
-                printf("httpGetTask: unable to create HTTP request. error=%d.\r\n", retcode);
-                retVal = RETCODE(RETCODE_SEVERITY_ERROR, RETCODE_INIT_REQUEST_FAILED);
-            }
-        }
-        if (RETCODE_OK == retVal)
-        {
-            HttpMsg_setReqMethod(httpMessage, Http_Method_Get);
-
-            HttpMsg_setContentType(httpMessage, Http_ContentType_Text_Plain);
-
-            retcode = HttpMsg_setReqUrl(httpMessage, DEST_GET_PATH);
-            if (RC_OK != retcode)
-            {
-                printf("httpGetTask: unable to set request URL. error=%d.\r\n", retcode);
-                retVal = RETCODE(RETCODE_SEVERITY_ERROR, RETCODE_SET_REQURL_FAILED);
-            }
-        }
-
-        if (RETCODE_OK == retVal)
-        {
-            retcode = HttpMsg_setHost(httpMessage, DEST_SERVER_HOST);
-            if (RC_OK != retcode)
-            {
-                printf("httpGetTask: unable to set HOST header. error=%d.\r\n", retcode);
-                retVal = RETCODE(RETCODE_SEVERITY_ERROR, RETCODE_SET_HOST_FAILED);
-            }
-        }
-
-        if (RETCODE_OK == retVal)
-        {
-            HttpMsg_setRange(httpMessage, httpGetPageOffset, REQUEST_MAX_DOWNLOAD_SIZE);
-
-            Callable_T httpRequestSentCallable;
-            (void) Callable_assign(&httpRequestSentCallable, httpRequestSentCallback);
-            retcode = HttpClient_pushRequest(httpMessage, &httpRequestSentCallable, httpGetResponseCallback);
-            if (RC_OK != retcode)
-            {
-                printf("httpGetTask: unable to push the HTTP request. error=%d.\r\n", retcode);
-                retVal = RETCODE(RETCODE_SEVERITY_ERROR, RETCODE_PUSH_REQUEST_FAILED);
-            }
-        }
-        if (RETCODE_OK != retVal)
-        {
-            Retcode_RaiseError(retVal);
-            xTimerStart(triggerHttpRequestTimerHandle, (const TickType_t)atoi(INTER_REQUEST_INTERVAL) / portTICK_PERIOD_MS);
-        }
-    }
-}
-
-
-static retcode_t httpPostCustomHeaderSerializer(OutMsgSerializationHandover_T* serializationHandover)
-{
-    if (serializationHandover == NULL)
-    {
-        printf("httpPostCustomHeaderSerializer: serializationHandover is NULL. This should never happen.\r\n");
-        return RC_APP_ERROR;
-    }
-
-    retcode_t result = RC_OK;
-    switch (serializationHandover->position)
-    {
-    case 0:
-        result = TcpMsg_copyStaticContent(serializationHandover, POST_REQUEST_CUSTOM_HEADER_0, strlen(POST_REQUEST_CUSTOM_HEADER_0));
-        if (result != RC_OK)
-            return result;
-        serializationHandover->position = 1;
-        break;
-    case 1:
-        result = TcpMsg_copyContentAtomic(serializationHandover, POST_REQUEST_CUSTOM_HEADER_1, strlen(POST_REQUEST_CUSTOM_HEADER_1));
-        if (result != RC_OK)
-            return result;
-        serializationHandover->position = 2;
-        break;
-    default:
-        result = RC_OK;
-    }
-    return result;
-
 }
 
 uint32_t GetUtcTime() {
@@ -470,6 +230,9 @@ static char* receiveBufferFromSensors(void){
 				case MAGNETOMETER:
 					aux = processMagnetometerData(null,0);
 					break;
+				case ACOUSTIC:
+					aux = processAcousticData(null,0);
+					break;
 
 		    }
 			strcat(buffer,aux);
@@ -497,160 +260,71 @@ static char* receiveBufferFromSensors(void){
 
 
 
-static retcode_t httpPostPayloadSerializer(OutMsgSerializationHandover_T* serializationHandover)
+static void AppControllerValidateWLANConnectivity(void)
 {
-    char* httpBodyBuffer = receiveBufferFromSensors();
+    Retcode_T retcode = RETCODE_OK;
+    NetworkConfig_IpStatus_T ipStatus = NETWORKCONFIG_IP_NOT_ACQUIRED;
+    NetworkConfig_IpSettings_T ipAddressOnGetStatus;
 
-    uint32_t offset = serializationHandover->offset;
-    uint32_t bytesLeft = strlen(httpBodyBuffer) - offset;
-    uint32_t bytesToCopy = serializationHandover->bufLen > bytesLeft ? bytesLeft : serializationHandover->bufLen;
-
-    memcpy(serializationHandover->buf_ptr, httpBodyBuffer + offset, bytesToCopy);
-    serializationHandover->len = bytesToCopy;
-    free(httpBodyBuffer);
-
-
-    if (bytesToCopy < bytesLeft)
+    ipStatus = NetworkConfig_GetIpStatus();
+    if (ipStatus == NETWORKCONFIG_IPV4_ACQUIRED)
     {
-        return RC_MSG_FACTORY_INCOMPLETE;
+        retcode = NetworkConfig_GetIpSettings(&ipAddressOnGetStatus);
+        if ((RETCODE_OK == retcode) && (UINT32_C(0) == (ipAddressOnGetStatus.ipV4)))
+        {
+            /* Our IP configuration is corrupted somehow in this case. No use in proceeding further. */
+            retcode = RETCODE(RETCODE_SEVERITY_ERROR, RETCODE_NODE_IPV4_IS_CORRUPTED);
+        }
     }
     else
     {
-        return RC_OK;
+        /* Our network connection is lost. No use in proceeding further. */
+        retcode = RETCODE(RETCODE_SEVERITY_ERROR, RETCODE_NODE_WLAN_CONNECTION_IS_LOST);
+    }
+    if (RETCODE_OK != retcode)
+    {
+        Retcode_RaiseError(retcode);
+        printf("AppControllerValidateWLANConnectivity : Resetting the device. Check if network is available. Node will do a soft reset in 10 seconds.\r\n\r\n");
+        vTaskDelay(pdMS_TO_TICKS(10000));
+        BSP_Board_SoftReset();
+        assert(false); /* Code must not reach here */
     }
 }
-
-static retcode_t httpPostResponseCallback(HttpSession_T *httpSession, Msg_T *httpMessage, retcode_t status)
-{
-    BCDS_UNUSED(httpSession);
-
-
-    if (RC_OK != status)
-    {
-        return RC_APP_ERROR;
-    }
-    if (NULL == httpMessage)
-    {
-        printf("httpPostResponseCallback: received NULL as HTTP message. This should not happen.\r\n");
-        return RC_APP_ERROR;
-    }
-
-    Http_StatusCode_T httpStatusCode = HttpMsg_getStatusCode(httpMessage);
-    if (Http_StatusCode_OK != httpStatusCode)
-    {
-        printf("httpPostResponseCallback: received HTTP status other than 200 OK. status=%d\r\n", httpStatusCode);
-    }
-    else
-    {
-        retcode_t retcode;
-        bool isLastPartOfMessage;
-        uint32_t pageContentSize;
-        retcode = HttpMsg_getRange(httpMessage, UINT32_C(0), &pageContentSize, &isLastPartOfMessage);
-        if (RC_OK != retcode)
-        {
-            printf("httpPostResponseCallback: failed to get range from message. error=%d\r\n", retcode);
-        }
-        else
-        {
-            const char* responseContent;
-            unsigned int responseContentLen;
-            HttpMsg_getContent(httpMessage, &responseContent, &responseContentLen);
-            printf("httpPostResponseCallback: successfully received a response: %.*s\r\n", responseContentLen, responseContent);
-
-            if (!isLastPartOfMessage)
-            {
-                printf("httpPostResponseCallback: server response was too large. This example application does not support POST responses larger than %lu.\r\n", REQUEST_MAX_DOWNLOAD_SIZE);
-            }
-
-            printf("httpPostResponseCallback: POST request is done. Restarting request timer.\r\n");
-
-        }
-    }
-
-    return RC_OK;
-}
-
-
 
 static void httpPostTask(void* parameter)
 {
     BCDS_UNUSED(parameter);
     retcode_t retcode;
-    Retcode_T retVal;
-    Msg_T* httpMessage;
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+    char* httpBodyBuffer;
 
    while (1)
     {
 	   	xSemaphoreTake(semPost,(const TickType_t)atoi(INTER_REQUEST_INTERVAL));
 
-        Ip_Address_T destServerAddress;
-        retVal = NetworkConfig_GetIpAddress((uint8_t*) DEST_SERVER_HOST, &destServerAddress);
-        if (RETCODE_OK != retVal)
-        {
-            printf("httpPostTask: unable to resolve hostname %s. error=%d.\r\n", DEST_SERVER_HOST, (int) retVal);
-        }
-        if (RETCODE_OK == retVal)
-        {
-            retcode = HttpClient_initRequest(&destServerAddress, Ip_convertIntToPort(atoi(DEST_SERVER_PORT)), &httpMessage);
+	   	AppControllerValidateWLANConnectivity();
 
-            if (RC_OK != retcode)
-            {
-                printf("httpPostTask: unable to create HTTP request. error=%d.\r\n", retcode);
-                retVal = RETCODE(RETCODE_SEVERITY_ERROR, RETCODE_INIT_REQUEST_FAILED);
-            }
-        }
-        if (RETCODE_OK == retVal)
-        {
-            HttpMsg_setReqMethod(httpMessage, Http_Method_Post);
+	   	httpBodyBuffer = receiveBufferFromSensors();
 
-            HttpMsg_setContentType(httpMessage, Http_ContentType_App_Json);
+	   	printf("--%s\n\r",httpBodyBuffer);
 
-            retcode = HttpMsg_setReqUrl(httpMessage, DEST_POST_PATH);
-            if (RC_OK != retcode)
-            {
-                printf("httpPostTask: unable to set request URL. error=%d.\r\n", retcode);
-                retVal = RETCODE(RETCODE_SEVERITY_ERROR, RETCODE_SET_REQURL_FAILED);
-            }
-        }
-        if (RETCODE_OK == retVal)
+	   	HTTPRestClient_Post_T HTTPRestClientPostInfo =
         {
-            retcode = HttpMsg_setHost(httpMessage, DEST_SERVER_HOST);
-            if (RC_OK != retcode)
-            {
-                printf("httpPostTask: unable to set HOST header. error=%d.\r\n", retcode);
-                retVal = RETCODE(RETCODE_SEVERITY_ERROR, RETCODE_SET_HOST_FAILED);
-            }
-        }
-        if (RETCODE_OK == retVal)
-        {
-            HttpMsg_setRange(httpMessage, httpGetPageOffset, REQUEST_MAX_DOWNLOAD_SIZE);
+                .Payload = httpBodyBuffer,
+                .PayloadLength = strlen(httpBodyBuffer),
+                .Url = DEST_POST_PATH,
+                .RequestCustomHeader0 = POST_REQUEST_CUSTOM_HEADER_0,
+				.RequestCustomHeader1 = POST_REQUEST_CUSTOM_HEADER_1
+        }; //< HTTP rest client POST parameters
 
-            HttpMsg_serializeCustomHeaders(httpMessage, httpPostCustomHeaderSerializer);
 
-            retcode = TcpMsg_prependPartFactory(httpMessage, httpPostPayloadSerializer);
-            if (RC_OK != retcode)
-            {
-                printf("httpPostTask: unable to serialize request body. error=%d.\r\n", retcode);
-                retVal = RETCODE(RETCODE_SEVERITY_ERROR, RETCODE_FAILURE);
-            }
-        }
-        if (RETCODE_OK == retVal)
-        {
-            Callable_T httpRequestSentCallable;
-            (void) Callable_assign(&httpRequestSentCallable, httpRequestSentCallback);
-            retcode = HttpClient_pushRequest(httpMessage, &httpRequestSentCallable, httpPostResponseCallback);
-            if (RC_OK != retcode)
-            {
-                printf("httpPostTask: unable to push the HTTP request. error=%d.\r\n", retcode);
-                retVal = RETCODE(RETCODE_SEVERITY_ERROR, RETCODE_PUSH_REQUEST_FAILED);
-            }
-        }
+	   	retcode = HTTPRestClient_Post(&HTTPRestClientConfigInfo, &HTTPRestClientPostInfo, APP_RESPONSE_FROM_HTTP_SERVER_POST_TIMEOUT);
 
-        if (RETCODE_OK != retVal)
+        if (RETCODE_OK != retcode)
         {
-            Retcode_RaiseError(retVal);
+            Retcode_RaiseError(retcode);
         }
+        free(httpBodyBuffer);
     }
 }
 
@@ -792,9 +466,63 @@ void InitSntpTime() {
   return;
 }
 
+void AppController_Init(void * cmdProcessorHandle, uint32_t param2)
+{
+    BCDS_UNUSED(param2);
+    Retcode_T retcode = RETCODE_OK;
+
+    if (cmdProcessorHandle == NULL)
+    {
+        printf("AppController_Init : Command processor handle is NULL \r\n");
+        retcode = RETCODE(RETCODE_SEVERITY_ERROR, RETCODE_NULL_POINTER);
+    }
+    else
+    {
+        AppCmdProcessor = (CmdProcessor_T *) cmdProcessorHandle;
+        retcode = CmdProcessor_Enqueue(AppCmdProcessor, appInitSystem, NULL, UINT32_C(0));
+    }
+
+    if (RETCODE_OK != retcode)
+    {
+        Retcode_RaiseError(retcode);
+        assert(0); /* To provide LED indication for the user */
+    }
+}
+
 
 void appInitSystem(void* cmdProcessorHandle, uint32_t param2)
 {
+	Retcode_T rt = RETCODE_FAILURE;
+
+	rt = InitSdCard();
+
+	if(rt != RETCODE_FAILURE)
+		readDataFromFileOnSdCard(FILE_NAME);
+
+
+	WLAN_Setup_T WLANSetupInfo =
+	        {
+	                .IsEnterprise = false,
+	                .IsHostPgmEnabled = false,
+	                .SSID = WLAN_SSID,
+	                .Username = WLAN_PSK,
+	                .Password = WLAN_PSK,
+	                .IsStatic = 0,
+	                .IpAddr = XDK_NETWORK_IPV4(0, 0, 0, 0),
+	                .GwAddr = XDK_NETWORK_IPV4(0, 0, 0, 0),
+	                .DnsAddr = XDK_NETWORK_IPV4(0, 0, 0, 0),
+	                .Mask = XDK_NETWORK_IPV4(0, 0, 0, 0),
+	        };
+
+	HTTPRestClient_Setup_T HTTPRestClientSetupInfo =
+	        {
+	                .IsSecure = HTTP_SECURE_ENABLE,
+	        };
+
+	HTTPRestClientConfigInfo.IsSecure = HTTP_SECURE_ENABLE;
+	HTTPRestClientConfigInfo.DestinationServerUrl = DEST_SERVER_HOST;
+	HTTPRestClientConfigInfo.DestinationServerPort = atoi(DEST_SERVER_PORT);
+	HTTPRestClientConfigInfo.RequestMaxDownloadSize = REQUEST_MAX_DOWNLOAD_SIZE;
 
     BCDS_UNUSED(param2);
     Retcode_T returnValue = RETCODE_OK;
@@ -804,15 +532,20 @@ void appInitSystem(void* cmdProcessorHandle, uint32_t param2)
     semPost = xSemaphoreCreateBinary();
 
     retcode_t rc = RC_OK;
-    rc = connectToWLAN();
+    rc = WLAN_Setup(&WLANSetupInfo);
     if (RC_OK != rc)
     {
         printf("appInitSystem: network init/connection failed. error=%d\r\n", rc);
         return;
     }
-
     printf("ServalPal Setup\r\n");
-    returnValue = ServalPalSetup();
+    returnValue = ServalPAL_Setup(AppCmdProcessorHandle);
+
+	if (RETCODE_OK == returnValue)
+	{
+		returnValue = HTTPRestClient_Setup(&HTTPRestClientSetupInfo);
+	}
+
     if (RETCODE_OK != returnValue)
     {
         Retcode_RaiseError(returnValue);
@@ -820,11 +553,36 @@ void appInitSystem(void* cmdProcessorHandle, uint32_t param2)
         return;
     }
 
-    rc = HttpClient_initialize();
-    if (RC_OK != rc)
+    Retcode_T retcode = WLAN_Enable();
+    if (RETCODE_OK == retcode)
     {
-        printf("Failed to initialize http client \r\n ");
-        return;
+        retcode = ServalPAL_Enable();
+    }
+	if (RETCODE_OK == retcode)
+	{
+	   retcode = HTTPRestClient_Enable();
+	}
+    if (RETCODE_OK != retcode){
+    	if(rt!= RETCODE_OK){
+    		printf("SD card failed!!! \n\r");
+    		return;
+    	}
+    	Retcode_RaiseError(retcode);
+		printf("WLAN_Enable failed with %d \r\n", (int) retcode);
+		return;
+    }
+    printf("Connecting to %s \r\n ", WLAN_SSID);
+    rc = HTTPRestClient_Setup(&HTTPRestClientSetupInfo);
+    if (RETCODE_OK != rc){
+       	Retcode_RaiseError(rc);
+   		printf("HTTPRestClient_Setup failed with %d \r\n", (int) rc);
+   		return;
+    }
+    rc = HTTPRestClient_Enable();
+    if (RETCODE_OK != rc){
+		Retcode_RaiseError(rc);
+		printf("HTTPRestClient_Enable failed with %d \r\n", (int) rc);
+		return;
     }
 
     InitSntpTime();
@@ -851,6 +609,9 @@ void appInitSystem(void* cmdProcessorHandle, uint32_t param2)
 					break;
 				case MAGNETOMETER:
 					magnetometerSensorInit();
+					break;
+				case ACOUSTIC:
+					acousticSensorInit();
 					break;
 
 		    }
@@ -888,5 +649,3 @@ CmdProcessor_T * GetAppCmdProcessorHandle(void)
 {
     return AppCmdProcessorHandle;
 }
-
-

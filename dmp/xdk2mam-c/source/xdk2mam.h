@@ -1,4 +1,3 @@
-
 #ifndef XDK110_HTTPXDK2MAM_H
 #define XDK110_HTTPXDK2MAM_H
 
@@ -6,7 +5,7 @@
 #include "BCDS_CmdProcessor.h"
 /* local type and macro definitions */
 
-#define MAX_SENSORS_ARRAY 6
+#define MAX_SENSORS_ARRAY 7
 
 #define DEFAULT_LOGICAL_DRIVE   ""
 #define DRIVE_ZERO  UINT8_C(0)
@@ -19,7 +18,8 @@ typedef enum{
 	GYROSCOPE = 2,
 	INERTIAL = 3,
 	LIGHT = 4,
-	MAGNETOMETER = 5
+	MAGNETOMETER = 5,
+	ACOUSTIC = 6
 }types_of_sensors;
 
 typedef enum{
@@ -28,8 +28,9 @@ typedef enum{
 	t_WLAN_PSK = 3,
 	t_DEST_SERVER_HOST = 4,
 	t_DEST_SERVER_PORT = 5,
-	t_INTER_REQUEST_INTERVAL = 6
-};
+	t_INTER_REQUEST_INTERVAL = 6,
+	t_DEST_POST_PATH = 7
+}types_sd_card_inputs;
 
 
 #define LOG_MODULE "NTP"
@@ -82,24 +83,16 @@ typedef enum{
 #define DEST_GET_PATH                   "/status"
 
 /**
- * DEST_POST_PATH is the path relative to the DEST_SERVER_HOST that we will send
- * the HTTP POST request to.
- *
- * Change this value if you use your own web server.
- */
-#define DEST_POST_PATH                  "/sensors"
-
-/**
  * POST_REQUEST_CUSTOM_HEADER_0 is a custom header which is sent along with the
  * POST request. It's meant to demonstrate how to use custom header.
  */
-#define POST_REQUEST_CUSTOM_HEADER_0    "X-AuthToken: XDK2MAM\r\n"
+#define POST_REQUEST_CUSTOM_HEADER_0    "X-AuthToken: InsertCrypticAuthenticationToken\r\n"
 
 /**
  * POST_REQUEST_CUSTOM_HEADER_1 is a custom header which is sent along with the
  * POST request. It's meant to demonstrate how to use custom header.
  */
-#define POST_REQUEST_CUSTOM_HEADER_1    "X-Foobar: XDK2MAM\r\n"
+#define POST_REQUEST_CUSTOM_HEADER_1    "X-Foobar: AnotherCustomHeader\r\n"
 
 
 /**
@@ -123,6 +116,8 @@ typedef enum{
  * XDK. The maximum value that will work here is 512 bytes.
  */
 #define REQUEST_MAX_DOWNLOAD_SIZE       UINT32_C(512)
+
+#define APP_RESPONSE_FROM_HTTP_SERVER_POST_TIMEOUT      UINT32_C(25000)/**< Timeout for completion of HTTP rest client POST */
 
 /* local module global variable declarations */
 
