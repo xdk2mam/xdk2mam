@@ -8,7 +8,7 @@ On the other side, IOTA's [Masked Authenticated Messaging (MAM)](https://blog.io
 
 The following repository has either **C code** for the Bosch XDK110 and for the data receiver in **Node.js** where the attach to Tangle via MAM happens, featuring the different methods the XDK110 is capable of (HTTP/MQTT/BLE)
 
-# Current stable XDK Workbench version to compile this code is 3.4.0
+# Current stable XDK Workbench version to compile this code is 3.4.0 (for Workbench 3.5 check Dev branch)
 
 While our goal is to always be up to the latest release of the [XDK Workbench](https://xdk.bosch-connectivity.com/software-downloads) (an Eclipse based IDE that comes with XDK to build software and flash it to the hardware), changes made by the Bosch team from release to release tend to leave our code with some compilation errors. 
 
