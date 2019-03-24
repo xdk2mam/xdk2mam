@@ -18,6 +18,9 @@
 #include "BCDS_ServalPal.h"
 #include "BCDS_ServalPalWiFi.h"
 
+#include "XDK_WLAN.h"
+#include "XDK_Utils.h"
+
 
 /* own header files */
 #include "BCDS_CmdProcessor.h"
@@ -244,23 +247,36 @@ static Retcode_T ServalPalSetup(void)
 
 static Retcode_T NetworkSetup(void)
 {
-    Retcode_T retcode = RETCODE_OK;
-    WlanConnect_SSID_T connectSSID = (WlanConnect_SSID_T) WLAN_SSID;
-    WlanConnect_PassPhrase_T connectPassPhrase =
-            (WlanConnect_PassPhrase_T) WLAN_PSK;
-    retcode = WlanConnect_Init();
-    if (retcode == RETCODE_OK)
-    {
-        retcode = NetworkConfig_SetIpDhcp(0);
 
-    }
-    if (retcode == RETCODE_OK)
+	WLAN_Setup_T WLANSetupInfo =
+	        {
+	                .IsEnterprise = false,
+	                .IsHostPgmEnabled = false,
+	                .SSID = WLAN_SSID,
+	                .Username = WLAN_PSK,
+	                .Password = WLAN_PSK,
+	                .IsStatic = 0,
+	                .IpAddr = XDK_NETWORK_IPV4(0, 0, 0, 0),
+	                .GwAddr = XDK_NETWORK_IPV4(0, 0, 0, 0),
+	                .DnsAddr = XDK_NETWORK_IPV4(0, 0, 0, 0),
+	                .Mask = XDK_NETWORK_IPV4(0, 0, 0, 0),
+	        };
+
+	retcode_t rc = RC_OK;
+	rc = WLAN_Setup(&WLANSetupInfo);
+
+    if (RC_OK != rc)
     {
-        retcode = WlanConnect_WPA(connectSSID, connectPassPhrase, NULL);
+        printf("appInitSystem: network init/connection failed. error=%d\r\n", rc);
+        return rc;
     }
-    if (retcode == RETCODE_OK)
+    printf("ServalPal Setup\r\n");
+    rc = ServalPAL_Setup(AppCmdProcessor);
+
+    Retcode_T retcode = WLAN_Enable();
+    if (RETCODE_OK == retcode)
     {
-        retcode = ServalPalSetup();
+        retcode = ServalPAL_Enable();
     }
 
     return retcode;
