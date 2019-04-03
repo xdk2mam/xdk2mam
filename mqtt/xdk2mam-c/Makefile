@@ -12,9 +12,25 @@ export BCDS_APP_DIR = $(CURDIR)
 export BCDS_APP_SOURCE_DIR = $(BCDS_APP_DIR)/source
 export BCDS_APP_SOURCE_DIR_SENSORS = $(BCDS_APP_DIR)/source/sensors
 
-#Please refer BCDS_CFLAGS_COMMON variable in application.mk file
-#and if any addition flags required then add that flags only in the below macro 
-#export BCDS_CFLAGS_COMMON = 
+#Enabled feature macros for common code
+export XDK_CONNECTIVITY_MQTT=1
+export XDK_CONNECTIVITY_WLAN=1
+
+export XDK_SENSOR_SENSOR=1
+
+#end of settings related to optimized build
+
+# This variable should fully specify the build configuration of the Serval
+# Stack library with regards the enabled and disabled features for the HTTPS Using TLS.
+export SERVAL_TLS_MBEDTLS=1
+export SERVAL_ENABLE_TLS_CLIENT=1
+export SERVAL_ENABLE_TLS_ECC=1
+export SERVAL_ENABLE_TLS_PSK=0
+export SERVAL_MAX_NUM_MESSAGES=8
+export SERVAL_MAX_SIZE_APP_PACKET=900
+export SERVAL_ENABLE_TLS=1
+
+export XDK_MBEDTLS_PARSE_INFO=0
 
 export BCDS_TARGET_BOARD = BSP_XDK110
 #List all the application header file under variable BCDS_XDK_INCLUDES

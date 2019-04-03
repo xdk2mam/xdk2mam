@@ -41,7 +41,7 @@ char* processAcousticData(void * param1, uint32_t param2)
     float acousticData;
 
 	if (RETCODE_OK == NoiseSensor_ReadRmsValue(&acousticData,10U)) {
-		sprintf(buffer,"{\"sensor\":\"Acoustic\",\"data\":[{\"mp\":\"%f\"}]}",
+		sprintf(buffer,"{\"sensor\":\"Aco\",\"data\":[{\"mp\":\"%f\"}]}",
 		    			acousticData/aku340CR);
 	}
     else

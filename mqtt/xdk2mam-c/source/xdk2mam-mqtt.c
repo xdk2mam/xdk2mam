@@ -1,4 +1,3 @@
-
 #include "XDKAppInfo.h"
 #undef BCDS_MODULE_ID
 #define BCDS_MODULE_ID  XDK_APP_MODULE_ID_XDK2MAM_MQTT
@@ -17,6 +16,9 @@
 #include "BCDS_WlanConnect.h"
 #include "BCDS_ServalPal.h"
 #include "BCDS_ServalPalWiFi.h"
+
+#include "XDK_WLAN.h"
+#include "XDK_Utils.h"
 
 
 /* own header files */
@@ -45,11 +47,11 @@ bool typesSensors[7] = {
 						true, //INERTIAL
 						true, //LIGHT
 						true, //MAGNETOMETER
-						true  //ACOUSTIC
+						false  //ACOUSTIC
 					};
 
 static CmdProcessor_T *AppCmdProcessor;
-static CmdProcessor_T CmdProcessorHandleServalPAL;
+
 static MqttSession_T Session;
 static MqttSession_T *SessionPtr;
 
@@ -69,47 +71,37 @@ static const char MqttBrokerAddressFormat[50] = "mqtt://%s:%d";
 static const char *DeviceName = DEVICE_NAME;
 static uint32_t SysTime = UINT32_C(0);
 
-
-static Retcode_T ServalPalSetup(void)
-{
-    Retcode_T returnValue = RETCODE_OK;
-    returnValue = CmdProcessor_Initialize(&CmdProcessorHandleServalPAL, (char *)"Serval PAL", TASK_PRIORITY_SERVALPAL_CMD_PROC, TASK_STACK_SIZE_SERVALPAL_CMD_PROC, TASK_QUEUE_LEN_SERVALPAL_CMD_PROC);
-    /* serval pal common init */
-    if (RETCODE_OK == returnValue)
-    {
-        returnValue = ServalPal_Initialize(&CmdProcessorHandleServalPAL);
-    }
-    if (RETCODE_OK == returnValue)
-    {
-        returnValue = ServalPalWiFi_Init();
-    }
-    if (RETCODE_OK == returnValue)
-    {
-        ServalPalWiFi_StateChangeInfo_T stateChangeInfo = { SERVALPALWIFI_OPEN, 0 };
-        returnValue = ServalPalWiFi_NotifyWiFiEvent(SERVALPALWIFI_STATE_CHANGE, &stateChangeInfo);
-    }
-    return returnValue;
-}
-
 static Retcode_T NetworkSetup(void)
 {
-    Retcode_T retcode = RETCODE_OK;
-    WlanConnect_SSID_T connectSSID = (WlanConnect_SSID_T) WIFI_SSID;
-    WlanConnect_PassPhrase_T connectPassPhrase =
-            (WlanConnect_PassPhrase_T) WIFI_PW;
-    retcode = WlanConnect_Init();
-    if (retcode == RETCODE_OK)
-    {
-        retcode = NetworkConfig_SetIpDhcp(0);
+	WLAN_Setup_T WLANSetupInfo =
+	        {
+	                .IsEnterprise = false,
+	                .IsHostPgmEnabled = false,
+	                .SSID = WIFI_SSID,
+	                .Username = WIFI_PW,
+	                .Password = WIFI_PW,
+	                .IsStatic = 0,
+	                .IpAddr = XDK_NETWORK_IPV4(0, 0, 0, 0),
+	                .GwAddr = XDK_NETWORK_IPV4(0, 0, 0, 0),
+	                .DnsAddr = XDK_NETWORK_IPV4(0, 0, 0, 0),
+	                .Mask = XDK_NETWORK_IPV4(0, 0, 0, 0),
+	        };
 
-    }
-    if (retcode == RETCODE_OK)
+	retcode_t rc = RC_OK;
+	rc = WLAN_Setup(&WLANSetupInfo);
+
+    if (RC_OK != rc)
     {
-        retcode = WlanConnect_WPA(connectSSID, connectPassPhrase, NULL);
+        printf("appInitSystem: network init/connection failed. error=%d\r\n", rc);
+        return rc;
     }
-    if (retcode == RETCODE_OK)
+    printf("ServalPal Setup\r\n");
+    rc = ServalPAL_Setup(AppCmdProcessor);
+
+    Retcode_T retcode = WLAN_Enable();
+    if (RETCODE_OK == retcode)
     {
-        retcode = ServalPalSetup();
+        retcode = ServalPAL_Enable();
     }
 
     return retcode;
@@ -213,6 +205,7 @@ static void PublishData(void *param1, uint32_t param2)
     char* httpBodyBuffer =  receiveBufferFromSensors();
 
     rc_publish = Mqtt_publish(SessionPtr, PublishTopicDescription,httpBodyBuffer, 800, (uint8_t) MQTT_QOS_AT_MOST_ONE, false);
+
     if (rc_publish == RC_OK)
     {
         PublishInProgress = 1;

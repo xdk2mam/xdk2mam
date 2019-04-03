@@ -64,7 +64,7 @@ char* processLightSensorData(void * param1, uint32_t param2)
     }
     else
     {
-        sprintf(buffer,"{\"sensor\":\"Light\",\"data\":[{\"milliLux\":\"%d\"}]}",
+        sprintf(buffer,"{\"sensor\":\"Light\",\"data\":[{\"mL\":\"%d\"}]}",
 							(unsigned int) milliLuxData);
     }
 
