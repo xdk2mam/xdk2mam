@@ -25,17 +25,11 @@ Once the installation finishes, edit the server.js file to add your Full Node (b
 
 ```
 let iota = new IOTA({
-  'host': 'https://your-node.com',
-  'port': '14265'
+	'provider': 'https://node0.capjupiter.com:14267'
 });
 ```
-And also change the seed value to your seed
 
-```
-const seed = "ENTERYOURSEEDITBWTGFTAFBZ9SXDSUNANZA9TGAOSIICFFOBHNUXQCFZWO9DSPUQUIZIJXOPHBY99999";
-```
-
-Once this is done, start the node server
+Once you have your IOTA Full Node setup, start the node server
 
 ```
 npm start
