@@ -1,10 +1,9 @@
 # XDK2MAM UDP Protocol WITH SD CARD
 
 UDP (User Datagram Protocol) is an alternative communications protocol to Transmission Control Protocol (TCP) used primarily for establishing low-latency and loss-tolerating connections between applications on the internet.
-The XDK supports HTTP natively UDP requests. This guide will provide an introduction to both of them and will demonstrate how to use them to make GET and POST request.
+The XDK supports HTTP natively UDP requests. This guide will provide an introduction on how to send and receive XDK110 sensor's data through UDP.
 
 The following repository has either files for the Bosch XDK 110 and for the data receiver in Node.js where the attach to Tangle via MAM happens. 
-
 
 - xdk2mam-c (C Code to build and flash to your XDK)
 - xdk2mam-nodejs (Node code to start a listener server)
