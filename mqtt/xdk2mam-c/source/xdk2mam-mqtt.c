@@ -1,3 +1,4 @@
+
 #include "XDKAppInfo.h"
 #undef BCDS_MODULE_ID
 #define BCDS_MODULE_ID  XDK_APP_MODULE_ID_XDK2MAM_MQTT
@@ -19,6 +20,7 @@
 
 #include "XDK_WLAN.h"
 #include "XDK_Utils.h"
+#include "XDK_ServalPAL.h"
 
 
 /* own header files */
@@ -37,6 +39,9 @@
 #include "Magnetometer.h"
 #include "Acoustic.h"
 
+#include "BCDS_SDCard_Driver.h"
+
+
 #include "XdkSensorHandle.h"
 
 // Global array of all sensors => true : enable -- false : disable
@@ -47,20 +52,17 @@ bool typesSensors[7] = {
 						true, //INERTIAL
 						true, //LIGHT
 						true, //MAGNETOMETER
-						false  //ACOUSTIC
+						true  //ACOUSTIC
 					};
 
-static CmdProcessor_T *AppCmdProcessor;
 
+static CmdProcessor_T *AppCmdProcessor;
 static MqttSession_T Session;
 static MqttSession_T *SessionPtr;
-
 
 static uint8_t PublishInProgress = 0;
 
 static TimerHandle_t PublishTimerHandle;
-
-static const char *PublishTopic = TOPIC;
 static StringDescr_T PublishTopicDescription;
 
 static StringDescr_T Topics[1];
@@ -68,18 +70,19 @@ static Mqtt_qos_t Qos[1];
 
 static char MqttBroker[50];
 static const char MqttBrokerAddressFormat[50] = "mqtt://%s:%d";
-static const char *DeviceName = DEVICE_NAME;
 static uint32_t SysTime = UINT32_C(0);
+
 
 static Retcode_T NetworkSetup(void)
 {
+
 	WLAN_Setup_T WLANSetupInfo =
 	        {
 	                .IsEnterprise = false,
 	                .IsHostPgmEnabled = false,
-	                .SSID = WIFI_SSID,
-	                .Username = WIFI_PW,
-	                .Password = WIFI_PW,
+	                .SSID = WLAN_SSID,
+	                .Username = WLAN_PSK,
+	                .Password = WLAN_PSK,
 	                .IsStatic = 0,
 	                .IpAddr = XDK_NETWORK_IPV4(0, 0, 0, 0),
 	                .GwAddr = XDK_NETWORK_IPV4(0, 0, 0, 0),
@@ -204,8 +207,7 @@ static void PublishData(void *param1, uint32_t param2)
 
     char* httpBodyBuffer =  receiveBufferFromSensors();
 
-    rc_publish = Mqtt_publish(SessionPtr, PublishTopicDescription,httpBodyBuffer, 800, (uint8_t) MQTT_QOS_AT_MOST_ONE, false);
-
+    rc_publish = Mqtt_publish(SessionPtr, PublishTopicDescription,httpBodyBuffer, strlen(httpBodyBuffer)+1, (uint8_t) MQTT_QOS_AT_MOST_ONE, false);
     if (rc_publish == RC_OK)
     {
         PublishInProgress = 1;
@@ -423,11 +425,11 @@ static void ConfigureSession(void)
                 SessionPtr->password = password;
 
                 StringDescr_T device_name_descr;
-                StringDescr_wrap(&device_name_descr, DeviceName);
+                StringDescr_wrap(&device_name_descr, DEVICE_NAME);
                 SessionPtr->clientID = device_name_descr;
 
-                StringDescr_wrap(&PublishTopicDescription, (const char *)PublishTopic);
-                StringDescr_wrap(&(Topics[0]), PublishTopic);
+                StringDescr_wrap(&PublishTopicDescription, (const char *)TOPIC);
+                StringDescr_wrap(&(Topics[0]), TOPIC);
                 Qos[0] = MQTT_QOS_AT_MOST_ONE;
             }
         }
@@ -632,6 +634,9 @@ void AppInitSystem(void * cmdProcessorHandle, uint32_t param2)
     }
     BCDS_UNUSED(param2);
     AppCmdProcessor = (CmdProcessor_T *) cmdProcessorHandle;
+
+    //Temporal fix...
+    SDCardDriver_Initialize();
 
     Retcode_T connect_rc = NetworkSetup();
     if (connect_rc == RETCODE_OK)

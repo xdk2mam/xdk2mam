@@ -2,7 +2,6 @@
 
 /* header definition ******************************************************** */
 #ifndef XDK110_ACOUSTIC_H_
-#define XDK110_Acoustic.h_H_
 
 /* public interface declaration ********************************************* */
 #include "BCDS_Retcode.h"

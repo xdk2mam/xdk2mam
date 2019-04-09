@@ -76,4 +76,5 @@ lint:
 	$(MAKE) -C $(BCDS_BASE_DIR)/xdk110/Common -f application.mk lint
 	
 cdt:
-	$(MAKE) -C $(BCDS_BASE_DIR)/xdk110/Common -f application.mk cdt	
+	$(MAKE) -C $(BCDS_BASE_DIR)/xdk110/Common -f application.mk cdt 
+

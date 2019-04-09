@@ -1,5 +1,4 @@
 
-
 /* own header files */
 #include "XDKAppInfo.h"
 #undef BCDS_MODULE_ID
@@ -64,7 +63,7 @@ char* processLightSensorData(void * param1, uint32_t param2)
     }
     else
     {
-        sprintf(buffer,"{\"sensor\":\"Light\",\"data\":[{\"mL\":\"%d\"}]}",
+        sprintf(buffer,"{\"sensor\":\"Light\",\"data\":[{\"milliLux\":\"%d\"}]}",
 							(unsigned int) milliLuxData);
     }
 
