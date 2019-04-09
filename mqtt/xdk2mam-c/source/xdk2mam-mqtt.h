@@ -31,9 +31,9 @@ typedef enum{
 
 
 
-#define WIFI_SSID 			"YourWifiNetwork"
+#define WLAN_SSID 			"YourWifiNetwork"
 
-#define WIFI_PW				"YourWifiPassword"
+#define WLAN_PSK			"YourWifiPassword"
 
 #define MQTT_BROKER_HOST	"MQTT_IP_BROKER_HOST"
 
