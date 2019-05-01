@@ -1,0 +1,8 @@
+{
+  "sensorId": "XDK2MAM-BSAS-001",
+  "secretKey": "UMTTTOMDDCKUWUO",
+  "debug": false,
+  "provider": "https://nodes.devnet.iota.org",
+  "endpoint": "https://us-central1-the-real-dm.cloudfunctions.net/newData"  
+}
+//CONFIGURATION FILE THAT YOU HAVE TO DOWNLOAD FROM THE DMP DASHBOARD

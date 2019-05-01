@@ -16,11 +16,11 @@
   "author": "Alejandro Elustondo - Daniel De Michele",
   "license": "ISC",
   "dependencies": {
-    "@iota/core": "^1.0.0-beta.3",
+    "@iota/converter": "^1.0.0-beta.8",
+    "@iota/mam": "^0.7.2",
     "body-parser": "^1.18.3",
+    "colors": "^1.3.3",
     "express": "^4.16.3",
-    "iota.lib.js": "^0.4.7",
-    "typescript-require": "^0.2.10",
-    "xdk2mam": "^1.0.7"
+    "node-fetch": "^2.3.0"
   }
 }

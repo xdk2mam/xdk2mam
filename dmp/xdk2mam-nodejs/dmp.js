@@ -1,5 +1,6 @@
-var bodyParser = require('body-parser');
-var express = require('express');
+var bodyParser = require('body-parser')
+var express = require('express')
+var colors = require('colors')
 
 var app = express();
 var port = process.env.PORT || 8080;
@@ -7,95 +8,89 @@ var port = process.env.PORT || 8080;
 
 app.use(express.static(__dirname));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({	extended: true,
-                                limit: "1mb"}));
+app.use(bodyParser.urlencoded({ extended: true,
+                                limit: "1mb"}))
 
 
 var fetch = require('node-fetch')
-var crypto = require('crypto')
-var Mam = require('./node_modules/xdk2mam/mam.client.js')
-var IOTA = require('iota.lib.js')
-var iota = new IOTA({ provider: 'https://nodes.testnet.iota.org/' })
-
-
-var debug = false
-let uuid = 'xdk2mam-001' // Your device ID is here.
-let secretKey = 'AYMOGQYCKZMZEYJ' // Your device's secret key here
-
-
-let endpoint = 'https://us-central1-marketplacev2.cloudfunctions.net/newData'
+const crypto = require('crypto')
+const Mam = require('@iota/mam')
+const { asciiToTrytes } = require('@iota/converter')
+const { debug, endpoint, secretKey, provider, sensorId } = require('./config.json')
 
 
 const keyGen = length => {
-    var charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ9'
-    var values = crypto.randomBytes(length)
-    var result = new Array(length)
-    for (var i = 0; i < length; i++) {
-    result[i] = charset[values[i] % charset.length]
-    }
-    return result.join('')
-}
+  const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ9';
+  const values = crypto.randomBytes(length);
+  return Array.from(new Array(length), (x, i) => charset[values[i] % charset.length]).join('');
+};
 
 
-let mamState = Mam.init(iota, keyGen(81))
-let mamKey = keyGen(81)
+let mamState = Mam.init(provider)
 
 
-const publish = async packet => {
-    mamState = Mam.changeMode(mamState, 'restricted', mamKey)
-    var trytes = iota.utils.toTrytes(JSON.stringify(packet))
-    var message = Mam.create(mamState, trytes)
-    mamState = message.state
-    await Mam.attach(message.payload, message.address)
-    console.log('Attached Message')
-    if (!debug) {
-      let pushToDemo = await pushKeys(message.root, mamKey)
-      console.log(pushToDemo)
-      mamKey = keyGen(81)
-    }
-}
+const storeKey = async (sidekey, root, time) => {
+  if (debug) return 'Debug mode';
 
-const pushKeys = async (root, sidekey) => {
-    const packet = {
-      sidekey: sidekey,
-      root: root,
-      time: Date.now()
-    }
-    var resp = await fetch(endpoint, {
-      method: 'post',
+  const packet = {
+    sidekey,
+    root,
+    time,
+  };
+
+  try {
+    const resp = await fetch(endpoint, {
+      method: 'POST',
       headers: {
-          'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id: uuid, packet, sk: secretKey })
-    })
-    return resp.json()
-}
+      body: JSON.stringify({ id: sensorId, packet, sk: secretKey }),
+    });
+    return await resp.json();
+  } catch (error) {
+    console.log('storeKey error', error);
+    return error;
+  }
+};
 
 
+const publish = async payload => {
+  const time = Date.now();
+  const packet = { time, data: { ...payload } };
+  let mamKey = keyGen(81);
+  mamState = Mam.changeMode(mamState, 'restricted', mamKey);
+  const trytes = asciiToTrytes(JSON.stringify(packet));
+  const message = Mam.create(mamState, trytes);
+  mamState = message.state;
+  await Mam.attach(message.payload, message.address);
+  const callbackResponse = await storeKey(mamKey, message.root, time);
+
+  console.log('Payload:', packet);
+  console.log(callbackResponse);
+  console.log('==============================================================');
+};
 
 app.post('/sensors', async function(req, res) {
-  var temp,press,hum,lux;
+  var temp,press,hum;
   req.body.xdk2mam.forEach(function(element){
     element.data.forEach(function(data){
-      if(data.name == 'Temperature')
-        temp = data.value;
-      else if(data.name == 'Humidity')
-        hum = data.value;
-      else if(data.name == 'Pressure')
-        press = data.value;
+      if(data.hasOwnProperty('Temp'))
+        temp = data.Temp;
+      else if(data.hasOwnProperty('Humidity'))
+        hum = data.Humidity;
+      else if(data.hasOwnProperty('Pressure'))
+        press = data.Pressure;
     });
   });
-  console.log('Temperature: ' + temp);
-  console.log('Humidity: ' + hum);
-  console.log('Pressure: ' + press);
+  console.log('Temperature: ' + colors.green.bold(temp) + " ° mC");
+  console.log('Humidity: ' + colors.green.bold(hum) + " Hg");
+  console.log('Pressure: ' + colors.green.bold(press) + " Pa");
   
-  publish({
-          time: Date.now(),
-          data: {
+  publish({ 
             temp: temp,
             hum: hum,
             press: press
-      }})
+          })
 
 });
 
