@@ -24,3 +24,4 @@ This is an issue **we are reviewing actively with Bosch XDK team**. Until we syn
 - **[BLE-SDCARD](https://github.com/xdk2mam/xdk2mam/tree/Workbench-3.6/ble-sdcard)** (send sensor's data from XDK110 to your Raspberry using Bluetooth Low Energy)
 - **[DMP](https://github.com/xdk2mam/xdk2mam/tree/Workbench-3.6/dmp)** (our template to interact with the IOTA Data Marketplace)
 - **[UDP](https://github.com/xdk2mam/xdk2mam/tree/Workbench-3.6/udp-sdcard)** (UDP method)
+- **[USB](https://github.com/xdk2mam/xdk2mam/tree/Workbench-3.6/usb-scdard)** (USB method)
