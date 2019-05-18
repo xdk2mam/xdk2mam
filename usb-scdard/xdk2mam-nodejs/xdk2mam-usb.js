@@ -10,7 +10,8 @@ let iota = new IOTA({
 });
 
 let mamState = Mam.init(iota,undefined,2)
-//Check if the 'ids' are correct. Take a look at this function 'usb.getDeviceList()'
+
+//Check if the ids (idVendor, idProduct) are correct. Take a look at this function 'usb.getDeviceList()'
 var xdk110 = usb.findByIds(4236, 379)
 
 xdk110.open()
