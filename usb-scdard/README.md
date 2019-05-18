@@ -1,8 +1,8 @@
 # XDK2MAM USB WITH SD CARD
-USB, short for Universal Serial Bus, is an industrial standard which was developed in the mid-1990s. It is an uniform, user-friendly interface for all peripheral devices which can be connected to a computer for both data
+USB is an uniform, user-friendly interface for all peripheral devices which can be connected to a computer for both data
 transfer and power supply purposes. The XDK110 supports connectivity via USB allowing the sensors node to send data to a machine without the need of being connected to the internet. 
 
-The following repository has either files for the Bosch XDK 110 and for the data receiver in Node.js where the publish to Tangle via MAM happens.
+The following repository has either files for the Bosch XDK110 and for the data receiver in Nodejs where the publish to Tangle via MAM happens.
 
 - xdk2mam-c (C Code to build and flash to your XDK)
 - xdk2mam-nodejs (Node code to start a listener server)
@@ -33,18 +33,19 @@ Navigate to your xdk2mam-nodejs folder and run the following command
 ```
 npm i
 ```
-Once the installation finishes, open and edit the xdk2mam-usb.js file to add a Full Node (be sure to use one with PoW enabled). You browse public Full Nodes at [IOTA Dance](https://iota.dance)
+Once the installation finishes, edit the xdk2mam-usb.js file to add a Full Node (be sure to use one with PoW enabled). You can browse public Full Nodes at [IOTA Dance](https://iota.dance)
 
 ```
 let iota = new IOTA({
   'provider': 'http://you-pow-enabled-node:14265' //(Check https://iota.dance/)  
 });
 ```
-You will also need to check that the USB Device vid (idVendor) and pid (idProduct) parameters at **usb.findByIds(vid, pid)** matches your system USB port.
+
+You will also need to check that the USB Device vid (idVendor) and pid (idProduct) parameters at **usb.findByIds(vid, pid)** match your system USB port being used by the XDK110.
 
 Default values provided on our code (usb.findByIds(4236, 379)) seem to work for Linux. If they don't you can explore your devices buy loggin into the console the results of **usb.getDeviceList()** as follows. 
 
-Unplug the the XDK110 from the USB port, print usb.getDeviceList() on console and check the Devices listed. Plug the XDK110 back and run the usb.getDeviceList() again. The USB port in which your XDK110 is connected should now be added to the previous devices list.
+Unplug the XDK110 from the USB port, print usb.getDeviceList() on console and check the Devices listed. Plug the XDK110 back and run the usb.getDeviceList() again. The USB port in which your XDK110 is connected should now be added to the previous devices list.
 
 ![USB Device ids](https://xdk2mam.io/assets/images/XDK-USB-DEVICES.jpg)
 
@@ -81,7 +82,7 @@ MAGNETOMETER=YES
 ACOUSTIC=YES
 ```
 
-Save the values, extract the micro SD card and carefully insert it into the XDK SD slot (contacts up). 
+Save the values, extract the micro SD card and carefully insert it into the XDK110 MicroSD slot (contacts up). 
 Turn on the XDK and you are good to go! 
 If everything went fine you should see data on your console. 
 
