@@ -40,7 +40,7 @@
 		<link>
 			<name>SDK</name>
 			<type>2</type>
-			<locationURI>ECLIPSE_HOME../SDK</locationURI>
+			<location>C:/XDK-Workbench/XDK/SDK</location>
 		</link>
 	</linkedResources>
 </projectDescription>

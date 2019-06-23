@@ -44,7 +44,7 @@ char* processInertiaSensor(void * param1, uint32_t param2)
     if (RETCODE_OK == gyroReturnValue)
     {
 
-        sprintf(buffer,"{\"sensorType\":\"Inertial\",\"data\":[{\"name\":\"x\",\"value\":\"%ld\"},{\"name\":\"y\",\"value\":\"%ld\"},{\"name\":\"z\",\"value\":\"%ld\"}]}",
+        sprintf(buffer,"{\"sensor\":\"Inertial\",\"data\":[{\"x\":\"%ld\"},{\"y\":\"%ld\"},{\"z\":\"%ld\"}]}",
 							(long int) getConvData.xAxisData, (long int) getConvData.yAxisData, (long int) getConvData.zAxisData);
 
     }

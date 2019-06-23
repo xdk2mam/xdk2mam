@@ -69,4 +69,4 @@ flash_release_bin:
 	$(MAKE) -C $(BCDS_BASE_DIR)/xdk110/Common -f application.mk flash_release_bin
 
 cdt:
-	$(MAKE) -C $(BCDS_BASE_DIR)/xdk110/Common -f application.mk cdt 
+	$(MAKE) -C $(BCDS_BASE_DIR)/xdk110/Common -f application.mk cdt	

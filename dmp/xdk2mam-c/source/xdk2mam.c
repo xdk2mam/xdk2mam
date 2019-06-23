@@ -320,10 +320,6 @@ static void httpPostTask(void* parameter)
 
 	   	retcode = HTTPRestClient_Post(&HTTPRestClientConfigInfo, &HTTPRestClientPostInfo, APP_RESPONSE_FROM_HTTP_SERVER_POST_TIMEOUT);
 
-        if (RETCODE_OK != retcode)
-        {
-            Retcode_RaiseError(retcode);
-        }
         free(httpBodyBuffer);
     }
 }
@@ -498,7 +494,7 @@ void appInitSystem(void* cmdProcessorHandle, uint32_t param2)
 
 	if(rt != RETCODE_FAILURE)
 		readDataFromFileOnSdCard(FILE_NAME);
-
+	
 
 	WLAN_Setup_T WLANSetupInfo =
 	        {
@@ -649,3 +645,5 @@ CmdProcessor_T * GetAppCmdProcessorHandle(void)
 {
     return AppCmdProcessorHandle;
 }
+
+
