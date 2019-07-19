@@ -7,7 +7,7 @@ The following repository has instructions to setup an application and device usi
 **This package uses a microSD card with a config file to specify which sensor's you want to use, the intervals and LoRa frequency, which makes possible to use the XDK in diferent networks without need to recompile (you just change values in the config file and you are ready to go)**
 
 
-- xdk2mam-c (C Code to build and flash to your XDK)
+- xdk2mam-lora (C Code to build and flash to your XDK)
 - xdk2mam-nodejs (Node code to start a listener server)
 - config.cfg (Configuration values stored on the microSD)
 
@@ -62,11 +62,11 @@ LIGHT=YES
 
 ## Compile and flash code to XDK110
 
-Open XDK Workbench and go to File -> Import. Choose General > Projects from Folder or Archive, head to the lora-sdcard folder and select ***xdk2mam-c***. Accept to import project. 
+Open XDK Workbench and go to File -> Import. Choose General > Projects from Folder or Archive, head to the lora-sdcard folder and select ***xdk2mam-lora***. Accept to import project. 
 
 
 ### Clear, Build and Flash
-Open XDK Workbench and go to File -> Import. Choose General > Projects from Folder or Archive and select the folder **xdk2mam-c**. Accept to import project. Once project is imported, right click on **xdk2mam** folder in your Workbench Project Explorer and select **Clean project**. When the clean is done, repat and select **Build Project**. This process can take some minutes depending on your hardware and you should see any problems at the Workbench Console.
+Open XDK Workbench and go to File -> Import. Choose General > Projects from Folder or Archive and select the folder **xdk2mam-lora**. Accept to import project. Once project is imported, right click on **xdk2mam** folder in your Workbench Project Explorer and select **Clean project**. When the clean is done, repat and select **Build Project**. This process can take some minutes depending on your hardware and you should see any problems at the Workbench Console.
 
 Finally, once the project has been built, connect your XDK 110 via USB and click the ***Flash*** button to install the software on the board. If everything went fine, you should be able to see the sensor data on your console.
 
