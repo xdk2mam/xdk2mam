@@ -25,3 +25,4 @@ This is an issue **we are reviewing actively with Bosch XDK team**. Until we syn
 - **[DMP](https://github.com/xdk2mam/xdk2mam/tree/Workbench-3.6/dmp)** (our template to interact with the IOTA Data Marketplace)
 - **[UDP](https://github.com/xdk2mam/xdk2mam/tree/Workbench-3.6/udp-sdcard)** (UDP method)
 - **[USB](https://github.com/xdk2mam/xdk2mam/tree/Workbench-3.6/usb-scdard)** (USB method)
+- **[LoRA](https://github.com/xdk2mam/xdk2mam/tree/Workbench-3.6/lora-sdcard)** (LoRa method)
