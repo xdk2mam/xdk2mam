@@ -1,0 +1,5 @@
+{
+    "appID": "insert-app-id",
+    "accessKey": "insert-access-key-ttn",
+    "provider": "https://nodes.devnet.iota.org"
+}

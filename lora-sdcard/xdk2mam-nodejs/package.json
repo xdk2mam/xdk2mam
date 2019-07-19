@@ -1,0 +1,17 @@
+{
+  "name": "xdk2mam-lora",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@iota/converter": "^1.0.0-beta.16",
+    "@iota/mam": "^0.7.3",
+    "colors": "^1.3.3",
+    "ttn": "^2.3.2"
+  }
+}
