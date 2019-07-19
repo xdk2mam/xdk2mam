@@ -83,7 +83,14 @@ Navigate to your xdk2mam-nodejs folder inside lora-sdcard and run the following 
 npm install
 ```
 Once the installation finishes, you can start fetching the data from TTN to publish it to the Tangle using MAM. 
-You ca change the Full Node used to do the proof of work on the **config.json** file
+You can change the Full Node used to do the proof of work on the **config.json** file. 
+Make sure to have your XDK110 switched on and start the Node.js publisher with:
 
-![Network connection succesfully](https://xdk2mam.io/assets/images/PicNodeConsole.png.png)
+```
+node lora-xdk2mam.js
+```
+
+![Network connection succesfully](https://xdk2mam.io/assets/images/PicNodeConsole.png)
+
+If everything went fine you should get the datasets on your console together with a root per message to verify publication on the Tangle. Here is one [one dataset](https://devnet.thetangle.org/mam/VFVLI9H9TRNAPSYYSJYEJDJNSTSHYXRCWMLCRVZNEEUY9WF99RSVTAJDCIXRSVNEWBKGMTXKFDZCWTHIK) published by us while doing this guide. 
 
