@@ -4,7 +4,7 @@ The XDK LoRa-Extension is a wireless and secure communication solution that can 
 
 The following repository has instructions to setup an application and device using [The Things Network](https://www.thethingsnetwork.org/), code for the Bosch XDK 110 and for the data receiver in Node.js where the attach to Tangle via MAM happens. 
 
-**This package uses a microSD card with a config file to specify which sensor's you want to use, the intervals and LoRa frequency, which makes possible to use the XDK in diferent networks without need to recompile (you just change values in the config file and you are ready to go)**
+**This package uses a microSD card with a config file to specify which sensors you want to use, the data relay intervals and LoRa frequency, which makes possible to use the XDK in diferent networks without need to recompile (you just change values in the config file and you are ready to go)**
 
 
 - xdk2mam-lora (C Code to build and flash to your XDK)
@@ -16,21 +16,19 @@ The following repository has instructions to setup an application and device usi
 ## Requirements
 - [XDK110](https://developer.bosch.com/web/xdk/overview)
 - [XDK LoRa Extension](https://xdk.bosch-connectivity.com/extensions)
-- [XDK Workbench](https://developer.bosch.com/web/xdk/downloads), 
+- [XDK Workbench](https://developer.bosch.com/web/xdk/downloads)
 - [Node.js](https://nodejs.org/en/download/)
 
 
 ## Setting up an application and device at TTN
 
-The Things Network has open LoRa Gateways all over the world and, therefore it is a good option to use with this module. If you are running your own 
-gateway modifications to the code should not be that extensive. 
+The Things Network has open LoRa Gateways all over the world and, therefore, is a good option to use with this module. If you are running your own gateway modifications to the code should not be that extensive. 
 
-Enter the TTN web, create an account to login and head to **Console**. There you will need to create first an application in order to register 
-a new device. Be sure to select a Handler that is on your region. 
+Enter the TTN web, create an account to login and head to **Console**. There you will need to create first an application in order to register a new device. Be sure to select a Handler that is on your region. 
 
 ![Create a new application at TTN](https://xdk2mam.io/assets/images/Pic1.png)
 
-Once you create your application, you will need to register a new device. The **Device EUI** field requires an EUI identifier located at the back of your XDK LoRa Extension. 
+After creating your application, you will need to register a new device. The **Device EUI** field requires an EUI identifier located at the back of your XDK LoRa Extension. 
 
 ![Register a new device at TTN](https://xdk2mam.io/assets/images/Pic2.png)
 
@@ -43,7 +41,7 @@ Once you finish creating the device you will get two values that the C applicati
 
 ## Setting the values on the config file
 
-Open the config.cfg file on this repo and replace the values for APP_LORA_APP_EUI and APP_LORA_APP_KEY to reflect what you got on yout TTN device. Save the changes, copy that file to a microSD card and insert it into your XDK110. 
+Open the config.cfg file on this repo and replace the values for APP_LORA_APP_EUI and APP_LORA_APP_KEY to reflect what you got on your TTN device. Save the changes, copy that file to a microSD card and insert it into your XDK110. 
 You are now ready to compile and flash the LoRa pckg.
 
 **Notice that the App Key value needs to be inserted without the brackets and with no spaces.** 
@@ -62,13 +60,13 @@ LIGHT=YES
 
 ## Compile and flash code to XDK110
 
-Open XDK Workbench and go to File -> Import. Choose General > Projects from Folder or Archive, head to the lora-sdcard folder and select ***xdk2mam-lora***. Accept to import project. 
+Open XDK Workbench and go to File -> Import. Choose General > Projects from Folder or Archive, head to the **lora-sdcard folder** and select ***xdk2mam-lora***. Accept to import project. 
 
 
 ### Clear, Build and Flash
-Open XDK Workbench and go to File -> Import. Choose General > Projects from Folder or Archive and select the folder **xdk2mam-lora**. Accept to import project. Once project is imported, right click on **xdk2mam** folder in your Workbench Project Explorer and select **Clean project**. When the clean is done, repat and select **Build Project**. This process can take some minutes depending on your hardware and you should see any problems at the Workbench Console.
+Once the project is imported, right click on **xdk2mam-lora** folder in your Workbench Project Explorer and select **Clean project**. When the clean is done, repeat and select **Build Project**. This process can take some minutes depending on your hardware and you should see any problems at the Workbench Console.
 
-Finally, once the project has been built, connect your XDK 110 via USB and click the ***Flash*** button to install the software on the board. If everything went fine, you should be able to see the sensor data on your console.
+Finally, once the project has been built, connect your XDK110 via USB and click the ***Flash*** button to upload the binary to the board.
 
 If everything went fine, you should see the message **LoRa Join Success**. 
 
