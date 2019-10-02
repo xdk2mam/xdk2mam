@@ -8,7 +8,9 @@ The following repository has either files for the Bosch XDK 110 and for the data
 **This package is a variation of the MQTT one that allows to set WLAN SSID, Password, Host and MQTT Broker needed values from a config file on a micro sd card, which makes possible to use the XDK in diferent networks without need to recompile (you just change values in the config file and you are ready to go)**
 
 - xdk2mam-c (C Code to build and flash to your XDK)
-- xdk2mam-nodejs (Node code to start a listener server)
+- xdk2mam-nodejs (Node code to start a listener server and publish to MAM1)
+- xdk2mam2-nodejs (Node code to start a listener server and publish to MAM2)
+
 
 # Instructions
 
