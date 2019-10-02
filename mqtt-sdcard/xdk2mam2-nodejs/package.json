@@ -1,0 +1,23 @@
+{
+    "name": "xdk2mam-mqtt-mam2",
+    "version": "1.0.5",
+    "description": "xdk2mam",
+    "main": "server.js",
+    "scripts": {
+      "start": "node server.js"
+    },
+    "keywords": [
+      "xdk",
+      "xdk2mam",
+      "mam2",
+      "iota",
+      "sensor"
+    ],
+    "author": "Alejandro Elustondo - Daniel De Michele",
+    "license": "ISC",
+    "dependencies": {
+      "colors": "^1.3.3",
+      "mqtt": "^2.18.1"
+    }
+  }
+  

@@ -1,0 +1,27 @@
+{
+    "name": "xdk2mam-ble-mam2",
+    "version": "1.0.5",
+    "description": "xdk2mam",
+    "main": "xdk2mam-ble.js",
+    "scripts": {
+      "start": "node xdk2mam-ble.js"
+    },
+    "keywords": [
+      "xdk",
+      "xdk2mam",
+      "mam",
+      "iota",
+      "sensor",
+      "ble",
+      "bluetooth"
+    ],
+    "author": "Alejandro Elustondo - Daniel De Michele",
+    "license": "ISC",
+    "dependencies": {
+        "noble": "^1.9.1",
+        "node-strings": "^1.0.2",
+        "string": "^3.3.3",
+        "colors": "^1.3.3"
+    }
+  }
+  

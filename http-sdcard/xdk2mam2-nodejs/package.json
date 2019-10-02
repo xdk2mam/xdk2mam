@@ -1,0 +1,23 @@
+{
+  "name": "xdk2mam-http-mam2",
+  "version": "1.0.5",
+  "description": "xdk2mam",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "xdk",
+    "xdk2mam",
+    "mam2",
+    "iota",
+    "sensor"
+  ],
+  "author": "Alejandro Elustondo - Daniel De Michele",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "colors": "^1.3.3",
+    "express": "^4.16.3"
+  }
+}
