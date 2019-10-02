@@ -35,7 +35,7 @@ At the bottom of the USER and ACL page you should find a selector between Patter
 That's it. MQTT Broker is now configured.
 
 
-## Setting up your Node listener
+## MAM 1: Setting up your Node listener
 Because as soon as you flash the C program to your XDK it starts sending the sensor's data, it might be a good idea to start first the Node server that will be listening. Download and install Node.js and be sure to include npm package manager.
 
 Navigate to your xdk2mam-nodejs folder and run the following command
@@ -73,6 +73,53 @@ Once this is done, start the node server
 npm start
 ```
 Now we are ready to start with the XDK software.
+
+## MAM 2: Setting up your Node listener
+Because as soon as you flash the C program to your XDK it starts sending the sensor's data, it might be a good idea to start first the Node server that will be listening. Download and install Node.js and be sure to include npm package manager.
+
+## Building MAM binaries
+This process involves the compilation of Entangled MAM2 binaries that will be used from Node to send messages via MAM2. For this we will be using [IOT2TANGLE Cmake Entangled MAM](https://github.com/iot2tangle/cmake-mam) The given code works for UNIX based systems (Linux/MacOS). Be sure to have [GNU Compiler Collection (GCC)](https://gcc.gnu.org/) and [Cmake](https://cmake.org/install/) installed before running the following commands. 
+
+Navigate to your xdk2mam2-nodejs folder and run the installation script (install.sh) to compile the send-msg and recv applications needed to publish and fetch data on MAM2. 
+
+```
+./install.sh
+```
+After the installation is done, you should be able to see the **send-msg** and **recv** executables on your **xdk2mam2-nodejs** folder. The Node scripts (server.js and getData.js) will execute this programs to publish and fetch data. 
+
+## Setting up the Nodejs files
+
+Once the installation finishes, edit the **server.js** file to add your MQTT login data..
+Using the data from this example this would be
+
+```
+var client  = mqtt.connect('mqtt://nqhswvmi:PFZk3-AF@m11.cloudmqtt.com:11075'); //mqtt://username:password@IPMQTTHOST:PORT
+```
+
+Edit information to use a valid Full Node (be sure to use one with PoW enabled)
+
+```
+let iota = new IOTA({
+  'host': 'https://your-node.com',
+  'port': '14265'
+});
+```
+And also provide the topic name created at your MQTT Broker
+
+```
+client.on('connect', function () {
+  client.subscribe('TOPIC-NAME');
+  console.log('MQTT client has been subscribed to the topic successfully!');
+});
+```
+
+Once this is done, start the node server
+
+```
+npm start
+```
+Now we are ready to start with the XDK software.
+
 
 
 ## Flashing your XDK: wifi and sensors configuration
