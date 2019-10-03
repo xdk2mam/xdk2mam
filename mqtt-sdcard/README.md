@@ -71,7 +71,7 @@ Save the values, extract the micro SD card and carefully insert it into the XDK 
 
 
 
-## Settinf up Nodejs Servers for MAM1 and MAM2
+## Setting up Nodejs Servers for MAM1 and MAM2
 
 ### MAM 1: Setting up your Node listener
 Because as soon as you flash the C program to your XDK it starts sending the sensor's data, it might be a good idea to start first the Node server that will be listening. Download and install Node.js and be sure to include npm package manager.
