@@ -166,7 +166,7 @@ To get data published with the server.js script you will need to run the getData
 ```
 $ node getData.js PZVTC9TKHBJLYOVLRXRVRLTJXYKTKATKAIKUEJQIXTUTWAZFUCUYJUHWLEKALCQYAZLP9LINNFICHUXY9PZVTC9TKHBJLYOVLRXRVRLTJXYKTKATKAIKUEJQIXTUTWAZFUCUYJUHWLEKALCQYAZLP9LINNFICHUXY9
 
-Payload: XDK2MAM MQTT data test
+Payload: XDK2MAM MQTT dataset test on MAM2
 
 ***************************************************
 ```
