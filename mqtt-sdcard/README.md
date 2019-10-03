@@ -156,7 +156,7 @@ Once this is done, start the node server
 ```
 npm start
 ```
-If everything went fine, you should be able to see data on your console. 
+If everything went fine, you should be able to see data on your console. Together with the sensor's dataset you will get an Address, Message ID and Bundle.
 
 ![Sensors data on MQTT Broker](https://puhal.uner.edu.ar/wp-content/uploads/mqttconsole.jpg)
 
