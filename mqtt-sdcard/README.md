@@ -85,7 +85,7 @@ Once the installation finishes, edit the **server.js** file to add your MQTT log
 Using the data from this example this would be
 
 ```
-var client  = mqtt.connect('mqtt://nqhswvmi:PFZk3-AF@m11.cloudmqtt.com:11075'); //mqtt://username:password@IPMQTTHOST:PORT
+var client = mqtt.connect('mqtt://username:password@IPMQTTHOST:PORT');
 ```
 
 Edit information to use a valid Full Node (be sure to use one with PoW enabled)
