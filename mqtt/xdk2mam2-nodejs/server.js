@@ -21,7 +21,7 @@ client.on('connect', function () {
 });
 
 function getMyInfo(info) {
-  return info.toString();
+  return info.toString().replace(/\0/g, '');
 };
 
 
