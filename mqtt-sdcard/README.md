@@ -35,7 +35,45 @@ At the bottom of the USER and ACL page you should find a selector between Patter
 That's it. MQTT Broker is now configured.
 
 
-## MAM 1: Setting up your Node listener
+## Flashing your XDK: wifi and sensors configuration
+Open XDK Workbench and go to File -> Import. Choose General > Projects from Folder or Archive and select the folder **xdk2mam-c**. Accept to import project. Navigate to the source folder and edit the following lines at **xdk2mam.h**
+
+### Clear, Build and Flash
+Once changes are to this files are saved, right click on **xdk2mam** folder in your Workbench Project Explorer and select **Clean project**. Once this is done, repat and select **Build Project**. This process can take some minutes depending on your hardware and you should see any problems at the Workbench Console.
+
+Finally, once the project has been built, connect your XDK 110 via USB and click the **Flash** button to install the software on the board. If everything went fine, you should be able to see the sensor data on your console.
+
+### Editing config data
+Open the config.cfg file on your computer and change the values to match your WLAN data, host, port, MQTT Broker data and the sensors you want to use.
+
+```
+DEVICE_NAME=enter-your-device-id
+WLAN_SSDI=enter-your-wifi-ssid
+WLAN_PSK=enter-your-wifi-password
+MQTT_BROKER_HOST=enter-ip-mqtt-host
+MQTT_BROKER_PORT=enter-port-mqtt
+PUBLISHTIMER_PERIOD_IN_MS=30000
+MQTT_USERNAME=enter-username
+MQTT_PASSWORD=enter-password
+TOPIC=enter-topic-name
+ENVIROMENTAL=YES
+ACCELEROMETER=YES
+GYROSCOPE=YES
+INERTIAL=YES
+LIGHT=YES
+MAGNETOMETER=YES
+ACOUSTIC=YES
+```
+
+Save the values, extract the micro SD card and carefully insert it into the XDK SD slot (contacts up). Turn on the XDK110 and you are good to go! If everything went fine you should be able to see datasets on CloudMQTT Websocket tab.
+
+
+
+
+
+## Settinf up Nodejs Servers for MAM1 and MAM2
+
+### MAM 1: Setting up your Node listener
 Because as soon as you flash the C program to your XDK it starts sending the sensor's data, it might be a good idea to start first the Node server that will be listening. Download and install Node.js and be sure to include npm package manager.
 
 Navigate to your xdk2mam-nodejs folder and run the following command
@@ -72,12 +110,14 @@ Once this is done, start the node server
 ```
 npm start
 ```
-Now we are ready to start with the XDK software.
+If everything went fine, you should be able to see the data on your console
 
-## MAM 2: Setting up your Node listener
+![Sensors data on MQTT Broker](https://puhal.uner.edu.ar/wp-content/uploads/mqttconsole.jpg)
+
+### MAM 2: Setting up your Node listener
 Because as soon as you flash the C program to your XDK it starts sending the sensor's data, it might be a good idea to start first the Node server that will be listening. Download and install Node.js and be sure to include npm package manager.
 
-## Building MAM binaries
+### Building MAM binaries
 This process involves the compilation of Entangled MAM2 binaries that will be used from Node to send messages via MAM2. For this we will be using [IOT2TANGLE Cmake Entangled MAM](https://github.com/iot2tangle/cmake-mam) The given code works for UNIX based systems (Linux/MacOS). Be sure to have [GNU Compiler Collection (GCC)](https://gcc.gnu.org/) and [Cmake](https://cmake.org/install/) installed before running the following commands. 
 
 Navigate to your xdk2mam2-nodejs folder and run the installation script (install.sh) to compile the send-msg and recv applications needed to publish and fetch data on MAM2. 
@@ -87,7 +127,7 @@ Navigate to your xdk2mam2-nodejs folder and run the installation script (install
 ```
 After the installation is done, you should be able to see the **send-msg** and **recv** executables on your **xdk2mam2-nodejs** folder. The Node scripts (server.js and getData.js) will execute this programs to publish and fetch data. 
 
-## Setting up the Nodejs files
+### Setting up the Nodejs files
 
 Once the installation finishes, edit the **server.js** file to add your MQTT login data..
 Using the data from this example this would be
@@ -99,10 +139,8 @@ var client  = mqtt.connect('mqtt://nqhswvmi:PFZk3-AF@m11.cloudmqtt.com:11075'); 
 Edit information to use a valid Full Node (be sure to use one with PoW enabled)
 
 ```
-let iota = new IOTA({
-  'host': 'https://your-node.com',
-  'port': '14265'
-});
+const node = "node05.iotatoken.nl"
+const portNode = 16265
 ```
 And also provide the topic name created at your MQTT Broker
 
@@ -118,41 +156,6 @@ Once this is done, start the node server
 ```
 npm start
 ```
-Now we are ready to start with the XDK software.
-
-
-
-## Flashing your XDK: wifi and sensors configuration
-Open XDK Workbench and go to File -> Import. Choose General > Projects from Folder or Archive and select the folder **xdk2mam-c**. Accept to import project. Navigate to the source folder and edit the following lines at **xdk2mam.h**
-
-### Clear, Build and Flash
-Once changes are to this files are saved, right click on **xdk2mam** folder in your Workbench Project Explorer and select **Clean project**. Once this is done, repat and select **Build Project**. This process can take some minutes depending on your hardware and you should see any problems at the Workbench Console.
-
-Finally, once the project has been built, connect your XDK 110 via USB and click the **Flash** button to install the software on the board. If everything went fine, you should be able to see the sensor data on your console.
-
-### Editing config data
-Open the config.cfg file on your computer and change the values to match your WLAN data, host, port, MQTT Broker data and the sensors you want to use.
-
-```
-DEVICE_NAME=enter-your-device-id
-WLAN_SSDI=enter-your-wifi-ssid
-WLAN_PSK=enter-your-wifi-password
-MQTT_BROKER_HOST=enter-ip-mqtt-host
-MQTT_BROKER_PORT=enter-port-mqtt
-PUBLISHTIMER_PERIOD_IN_MS=30000
-MQTT_USERNAME=enter-username
-MQTT_PASSWORD=enter-password
-TOPIC=enter-topic-name
-ENVIROMENTAL=YES
-ACCELEROMETER=YES
-GYROSCOPE=YES
-INERTIAL=YES
-LIGHT=YES
-MAGNETOMETER=YES
-ACOUSTIC=YES
-```
-
-Save the values, extract the micro SD card and carefully insert it into the XDK SD slot (contacts up). Turn on the XDK110 and you are good to go! If everything went fine you should see data on your console.
-
+If everything went fine, you should be able to see data on your console. 
 
 ![Sensors data on MQTT Broker](https://puhal.uner.edu.ar/wp-content/uploads/mqttconsole.jpg)
