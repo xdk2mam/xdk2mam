@@ -159,3 +159,15 @@ npm start
 If everything went fine, you should be able to see data on your console. 
 
 ![Sensors data on MQTT Broker](https://puhal.uner.edu.ar/wp-content/uploads/mqttconsole.jpg)
+
+### Getting the data
+To get data published with the server.js script you will need to run the getData.js passing the Bundle as argument. 
+
+```
+$ node getData.js PZVTC9TKHBJLYOVLRXRVRLTJXYKTKATKAIKUEJQIXTUTWAZFUCUYJUHWLEKALCQYAZLP9LINNFICHUXY9PZVTC9TKHBJLYOVLRXRVRLTJXYKTKATKAIKUEJQIXTUTWAZFUCUYJUHWLEKALCQYAZLP9LINNFICHUXY9
+
+Payload: XDK2MAM MQTT data test
+
+***************************************************
+```
+
