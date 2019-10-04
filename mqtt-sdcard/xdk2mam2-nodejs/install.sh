@@ -8,5 +8,4 @@ mv mam/send-msg ../send-msg
 mv mam/recv ../recv
 cd ..
 rm -rf cmake-mam
-npm install
 exec bash
