@@ -5,6 +5,7 @@ The following repository has either files for the Bosch XDK 110 and for the data
 
 - xdk2mam-c (C Code to build and flash to your XDK)
 - xdk2mam-nodejs (Node code to start a listener server)
+- xdk2mam2-nodejs (Node code to start a listener server and publish to MAM2)
 
 # Instructions
 
