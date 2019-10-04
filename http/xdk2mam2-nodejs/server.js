@@ -27,8 +27,10 @@ const portNode = 16265
 
 app.post('/sensors', async function(req, res) {
 
+  const data = JSON.stringify(req.body)
   console.log("Please wait...")
-  exec('./send-msg '+ node +' ' + portNode + ' ' +seed + ' ' + JSON.stringify(req.body) + ' "no"' , (error, stdout, stderr) => {
+  console.log(data)
+  exec('./send-msg '+ node +' ' + portNode + ' ' +seed + ' ' + data + ' "no"' , (error, stdout, stderr) => {
     if (error) {
       console.error(`exec error: ${error}`);
       return;
