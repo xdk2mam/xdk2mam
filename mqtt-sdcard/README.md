@@ -158,16 +158,11 @@ npm start
 ```
 If everything went fine, you should be able to see data on your console. Together with the sensor's dataset you will get an Address, Message ID and Bundle.
 
-![Sensors data on MQTT Broker](https://puhal.uner.edu.ar/wp-content/uploads/mqttconsole.jpg)
+![Sensors data on MQTT Broker](https://xdk2mam.io/assets/images/mqtt-mam2.png)
 
 ### Getting the data
 To get data published with the server.js script you will need to run the getData.js passing the Bundle as argument. 
 
-```
-$ node getData.js PZVTC9TKHBJLYOVLRXRVRLTJXYKTKATKAIKUEJQIXTUTWAZFUCUYJUHWLEKALCQYAZLP9LINNFICHUXY9PZVTC9TKHBJLYOVLRXRVRLTJXYKTKATKAIKUEJQIXTUTWAZFUCUYJUHWLEKALCQYAZLP9LINNFICHUXY9
+![Sensors data on MQTT Broker](https://xdk2mam.io/assets/images/mqtt-mam2-fetch.png)
 
-Payload: {"xdk2mam":[{"sensor": "Environmental","data":[{"Pressure":"102298"},{"Temp":"29000"},{"Humidity":"31"}]},{"sensor":"Accel","data":[{"x":"19"},{"y":"3"},{"z":"1036"}]},{"sensor":"Gyroscope","data":[{"x":"1220"},{"y":"2562"},{"z":"-5246"}]},{"sensor":"Inertial","data":[{"x":"122"},{"y":"732"},{"z":"-61"}]},{"sensor":"Light","data":[{"milliLux":"66960"}]},{"sensor":"Magnetometer","data":[{"x":"89"},{"y":"-78"},{"z":"7"}]},{"sensor":"Acoustic","data":[{"mp":"0.005405"}]} ],"device": "Carpi-Test","timestamp": "4783"}
-
-***************************************************
-```
 
