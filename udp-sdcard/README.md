@@ -108,11 +108,11 @@ npm start
 ```
 If everything went fine, you should be able to see data on your console. Together with the sensor's dataset you will get an Address, Message ID and Bundle.
 
-![Sensors data on MQTT Broker](https://xdk2mam.io/assets/images/http-mam2.png)
+![Sensors data on MQTT Broker](https://xdk2mam.io/assets/images/udp-mam2.png)
 
 ### Getting the data
 To get data published with the server.js script you will need to run the getData.js passing the Bundle as argument. 
 
-![Sensors data on MQTT Broker](https://xdk2mam.io/assets/images/http-mam2-fetch.png)
+![Sensors data on MQTT Broker](https://xdk2mam.io/assets/images/udp-mam2-fetch.png)
 
 
