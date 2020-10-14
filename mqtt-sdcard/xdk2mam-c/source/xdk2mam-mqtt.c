@@ -129,7 +129,7 @@ void readDataFromFileOnSdCard(const char* filename){
 	DEVICE_NAME = calloc(96, sizeof(char));
 	WLAN_SSID = calloc(128, sizeof(char));
 	WLAN_PSK = calloc(128, sizeof(char));
-	MQTT_BROKER_HOST = calloc(20, sizeof(char));
+	MQTT_BROKER_HOST = calloc(64, sizeof(char));
 	MQTT_BROKER_PORT = calloc(10, sizeof(char));
 	PUBLISHTIMER_PERIOD_IN_MS = calloc(20, sizeof(char));
 	MQTT_USERNAME = calloc(64, sizeof(char));
