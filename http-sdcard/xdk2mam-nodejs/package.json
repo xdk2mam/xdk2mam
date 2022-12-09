@@ -18,7 +18,7 @@
   "dependencies": {
     "@iota/core": "^1.0.0-beta.3",
     "body-parser": "^1.18.3",
-    "express": "^4.16.3",
+    "express": "^4.17.3",
     "iota.lib.js": "^0.4.7",
     "typescript-require": "^0.2.10",
     "xdk2mam": "^1.0.7"
